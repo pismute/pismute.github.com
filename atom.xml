@@ -72,12 +72,12 @@
     <title><![CDATA[  ]]></title>
     <link href="https://pismute.github.io/'atom.xml'}}}" rel="self" />
     <link href="https://pismute.github.io/" />
-    <updated>2015-03-12T13:26:24.646Z</updated>
+    <updated>2015-03-12T13:49:28.095Z</updated>
     <id>https://pismute.github.io/</id>
     <entry>
     <title><![CDATA[ d3js: chapter 12. geomapping ]]></title>
     <link herf="http://pismute.github.io/d3js/12-geomapping.html" />
-    <updated>2015-03-12T13:26:24.651Z</updated>
+    <updated>2015-03-12T13:49:28.100Z</updated>
     <id>http://pismute.github.io/d3js/12-geomapping.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-12-geomapping">d3js: chapter 12. geomapping</h1>
@@ -576,7 +576,7 @@
     <entry>
     <title><![CDATA[ d3js: chapter 7. scale ]]></title>
     <link herf="http://pismute.github.io/d3js/07-scale.html" />
-    <updated>2015-03-12T13:26:24.653Z</updated>
+    <updated>2015-03-12T13:49:28.102Z</updated>
     <id>http://pismute.github.io/d3js/07-scale.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-7-scale">d3js: chapter 7. scale</h1>
@@ -1075,7 +1075,7 @@
     <entry>
     <title><![CDATA[ d3js: chapter 8. axis ]]></title>
     <link herf="http://pismute.github.io/d3js/08-axis.html" />
-    <updated>2015-03-12T13:26:24.654Z</updated>
+    <updated>2015-03-12T13:49:28.102Z</updated>
     <id>http://pismute.github.io/d3js/08-axis.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-8-axis">d3js: chapter 8. axis</h1>
@@ -1453,7 +1453,7 @@
     <entry>
     <title><![CDATA[ d3js: chapter 5. data ]]></title>
     <link herf="http://pismute.github.io/d3js/05-data.html" />
-    <updated>2015-03-12T13:26:24.655Z</updated>
+    <updated>2015-03-12T13:49:28.102Z</updated>
     <id>http://pismute.github.io/d3js/05-data.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-5-data">d3js: chapter 5. data</h1>
@@ -1614,7 +1614,7 @@ circle {
     <entry>
     <title><![CDATA[ d3js: chapter 6. drawing with data ]]></title>
     <link herf="http://pismute.github.io/d3js/06-drawing-with-data.html" />
-    <updated>2015-03-12T13:26:24.656Z</updated>
+    <updated>2015-03-12T13:49:28.103Z</updated>
     <id>http://pismute.github.io/d3js/06-drawing-with-data.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-6-drawing-with-data">d3js: chapter 6. drawing with data</h1>
@@ -1745,12 +1745,12 @@ circle {
         </footer>
     </div>
 
-    <script async defer
+    <script
         src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
-    <script async defer
+    <script
         src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
-    <script async defer
+    <script
         src="/scripts/script.js"></script>
 
     <script
