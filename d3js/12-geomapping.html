@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf=8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+
+    <title>d3js: chapter 12. geomapping</title>
+    <meta name="description"
+        content="이 글은 http://infovis.kr 스터디 하면서 작성했고 d3.js 12장의 내용이다."></meta>
+    <meta name="keywords"
+        content="d3,infoviz"></meta>
+    <meta name="author"
+        content="Changwoo Park"></meta>
+
+    <link rel="shortcut icon" href="images/favicon.ico"></link>
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png"></link>
+    <link rel="apple-touch-icon" sizes="72x72"
+        href=" ='images/apple-touch-icon-72x72.png"></link>
+    <link rel="apple-touch-icon" sizes="114x114"
+        href="images/apple-touch-icon-114x114.png"></link>
+    <link rel="alternate" type="application/atom+xml"
+        title="d3js: chapter 12. geomapping &raquo; Feed"
+        href="https://pismute.github.io/atom.xml"></link>
+
+    <link rel="stylesheet" media="screen, projection"
+        href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"></link>
+    <link rel="stylesheet" media="screen, projection"
+        href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.2.2/css/material-wfont.css"></link>
+    <link rel="stylesheet" media="screen, projection"
+        href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.2.2/css/ripples.css"></link>
+    <link rel="stylesheet" media="screen, projection"
+        href="/styles/style.css"></link>
+</head>
+
+<body>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.5.0/lodash.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed"
+                    data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">@</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/site/archive.html">Archive</a></li>
+                    <li><a href="/site/keyword-map.html">Keyword Map</a></li>
+                </ul>
+                <form id="search-form" class="navbar-form navbar-right"
+                        action="http://google.com/search" method="get">
+                    <input type="hidden" name="q"
+                        value="site:pismute.github.io"></input>
+                    <input class="form-control" type="text"
+                        name="q" results="0" placeholder="Search..."></input>
+                </form>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+    <div class="container">
+        <div>
+          <link rel="stylesheet" media="screen, projection"
+    href="/styles/github.css"></link>
+<link rel="stylesheet" media="screen, projection"
+    href="/styles/pygment-github.css"></link>
+<link rel="stylesheet" media="screen, projection"
+    href="/styles/markdown.css"></link>
+
+<script async defer
+    src="/babel.js"></script>
+<script async defer>
+    function runLangJs(){
+        $(function(){ //defer
+            $('.lang-js').each(function(){
+                var script = document.createElement('script');
+                script.type = "text/babel";
+                $(script).text('(function(){\n' + $(this).text() + '\n})()');
+
+                $('#script-holder').append(script);
+            });
+        });
+    }
+</script>
+<section class="content">
+    <article id="post" class="row post " typeof="sioc:post" about="/d3js/12-geomapping.html" lang="ko-kr">
+        <div class="col-sm-2 small-font">
+            <br /><br />
+            <p property="dc:created">2015 Mar 10</p>
+
+            <p class="small-font top-line"><a href="/site/keyword-map.html#d3" class="keyword">d3</a> <a href="/site/keyword-map.html#infoviz" class="keyword">infoviz</a></p>
+        </div>
+
+        <div class="col-sm-10">
+            <div property="sioc:content"><h1 id="d3js-chapter-12-geomapping">d3js: chapter 12. geomapping</h1>
+<blockquote>
+<p>이 글은 <a href="http://infovis.kr">http://infovis.kr</a> 스터디 하면서 작성했고 <a href="http://www.aladin.co.kr/shop/wproduct.aspx?ISBN=896626106X">d3.js</a> 12장의 내용이다.</p>
+</blockquote>
+<h2 id="geojson">GeoJSON</h2>
+<pre><code class="lang-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;FeatureCollection&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;features&quot;</span><span class="p">:[{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;Feature&quot;</span><span class="p">,</span> <span class="err">//</span> <span class="err">주</span> <span class="err">단위</span> <span class="err">데이터</span> <span class="err">타입</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="s2">&quot;01&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;properties&quot;</span><span class="p">:{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;Alabama&quot;</span><span class="p">},</span>
+        <span class="nt">&quot;geometry&quot;</span><span class="p">:{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;Polygon&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;coordinates&quot;</span><span class="p">:[[[</span><span class="mf">-87.359296</span><span class="p">,</span><span class="mf">35.00118</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">-85.606675</span><span class="p">,</span><span class="mf">34.984749</span><span class="p">],</span> <span class="p">[</span><span class="mf">-85.431413</span><span class="p">,</span><span class="mf">34.124869</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">-85.184951</span><span class="p">,</span><span class="mf">32.859696</span><span class="p">],</span> <span class="p">[</span><span class="mf">-85.069935</span><span class="p">,</span><span class="mf">32.580372</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">-84.960397</span><span class="p">,</span><span class="mf">32.421541</span><span class="p">],</span> <span class="p">[</span><span class="mf">-85.004212</span><span class="p">,</span><span class="mf">32.322956</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">-84.889196</span><span class="p">,</span><span class="mf">32.262709</span><span class="p">],</span> <span class="p">[</span><span class="mf">-85.058981</span><span class="p">,</span><span class="mf">32.13674</span><span class="p">],</span>
+                <span class="err">...</span>
+            <span class="p">]]</span>
+        <span class="p">}</span>
+    <span class="p">},</span> <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;Feature&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="s2">&quot;02&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;properties&quot;</span><span class="p">:{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;Alaska&quot;</span><span class="p">},</span>
+        <span class="nt">&quot;geometry&quot;</span><span class="p">:{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;MultiPolygon&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;coordinates&quot;</span><span class="p">:[</span>
+                <span class="p">[[[</span><span class="mf">-131.602021</span><span class="p">,</span><span class="mf">55.117982</span><span class="p">],</span> <span class="p">[</span><span class="mf">-131.569159</span><span class="p">,</span><span class="mf">55.28229</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">-131.355558</span><span class="p">,</span><span class="mf">55.183705</span><span class="p">],</span> <span class="p">[</span><span class="mf">-131.38842</span><span class="p">,</span><span class="mf">55.01392</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">-131.645836</span><span class="p">,</span><span class="mf">55.035827</span><span class="p">],</span> <span class="p">[</span><span class="mf">-131.602021</span><span class="p">,</span><span class="mf">55.117982</span><span class="p">]]],</span>
+                <span class="p">[[[</span><span class="mf">-131.832052</span><span class="p">,</span><span class="mf">55.42469</span><span class="p">],[</span><span class="mf">-131.645836</span><span class="p">,</span><span class="mf">55.304197</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">-131.749898</span><span class="p">,</span><span class="mf">55.128935</span><span class="p">],[</span><span class="mf">-131.832052</span><span class="p">,</span><span class="mf">55.189182</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">-131.832052</span><span class="p">,</span><span class="mf">55.42469</span><span class="p">]]]</span>
+                <span class="err">...</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="err">...</span>
+<span class="err">}</span>
+</pre></div>
+
+</code></pre>
+<ul>
+<li>Feature가 주 단위 데이터.</li>
+<li>좌표는 <del>위도, 경도가 익숙하지만</del> “[경도(latitude), 위도(longitude)]”로 표현: <code>[-131.832052,55.189182]</code><ul>
+<li>경도: 세로, 131.832052</li>
+<li>위도: 가로, 55.189182</li>
+</ul>
+</li>
+<li>좌표 찾기 from Michal Migurski: <a href="http://teczno.com/squares">http://teczno.com/squares</a></li>
+</ul>
+<p>이 데이터를 d3로 그려보자:</p>
+<p id="phr-path"></p>
+
+<pre><code class="lang-js"><div class="highlight"><pre><span class="c1">//Width and height</span>
+<span class="kr">const</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">300</span><span class="p">;</span>
+
+<span class="c1">//Define default path generator</span>
+<span class="kd">var</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">geo</span><span class="p">.</span><span class="nx">path</span><span class="p">();</span>
+
+<span class="c1">//Create SVG element</span>
+<span class="kd">var</span> <span class="nx">svg</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;#phr-path&#39;</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;svg&#39;</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="nx">w</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="nx">h</span><span class="p">);</span>
+
+<span class="c1">//Load in GeoJSON data</span>
+<span class="nx">d3</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="s1">&#39;us-states.json&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">json</span><span class="p">)</span><span class="o">=&gt;</span> <span class="p">{</span>
+
+    <span class="c1">//Bind data and create one path per GeoJSON feature</span>
+    <span class="nx">svg</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">json</span><span class="p">.</span><span class="nx">features</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">enter</span><span class="p">()</span>
+       <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="nx">path</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+</code></pre>
+<h3 id="path">Path</h3>
+<p>잠깐 svg path와 d3에서 path 사용하는 방법을 익혀보자. 이 내용은 11장의 pie layout을 설명하는 내용이다.</p>
+<p>path는 아래처럼 생김:</p>
+<pre><code class="lang-html"><div class="highlight"><pre><span class="nt">&lt;path</span> <span class="na">fill=</span><span class="s">&quot;#d62728&quot;</span> <span class="na">d=</span><span class="s">&quot;M9,184850993605149e-15,-150A150,150 0 0,</span>
+<span class="s">    18399621792063931,124.27644738657631L0,0Z&quot;</span><span class="nt">&gt;&lt;/path&gt;</span>
+</pre></div>
+
+</code></pre>
+<p>pie layout:</p>
+<pre><code><div class="highlight"><pre><span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">];</span>
+
+<span class="c1">// pie layout</span>
+<span class="kd">var</span> <span class="nx">pie</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">layout</span><span class="p">.</span><span class="nx">pie</span><span class="p">();</span>
+</pre></div>
+
+</code></pre><p><img src="d3js-layout-pie.png" alt=""></p>
+<p>pie chart 그리기:</p>
+<div id="phr-pie-chart"></div>
+
+<pre><code class="lang-js"><div class="highlight"><pre><span class="c1">//Width and height</span>
+<span class="kr">const</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">300</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">300</span><span class="p">;</span>
+
+<span class="kr">const</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">25</span> <span class="p">];</span>
+
+<span class="kd">var</span> <span class="nx">outerRadius</span> <span class="o">=</span> <span class="nx">w</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">innerRadius</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">arc</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">svg</span><span class="p">.</span><span class="nx">arc</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">innerRadius</span><span class="p">(</span><span class="nx">innerRadius</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">outerRadius</span><span class="p">(</span><span class="nx">outerRadius</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">pie</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">layout</span><span class="p">.</span><span class="nx">pie</span><span class="p">();</span>
+
+<span class="c1">//Easy colors accessible via a 10-step ordinal scale</span>
+<span class="c1">//Synthia Brewer</span>
+<span class="kd">var</span> <span class="nx">color</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">category10</span><span class="p">();</span>
+
+<span class="c1">//Create SVG element</span>
+<span class="kd">var</span> <span class="nx">svg</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;#phr-pie-chart&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="nx">w</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="nx">h</span><span class="p">);</span>
+
+<span class="c1">//Set up groups</span>
+<span class="kd">var</span> <span class="nx">arcs</span> <span class="o">=</span> <span class="nx">svg</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;g.arc&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">pie</span><span class="p">(</span><span class="nx">dataset</span><span class="p">))</span>
+    <span class="p">.</span><span class="nx">enter</span><span class="p">()</span>
+        <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="s2">&quot;arc&quot;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;transform&quot;</span><span class="p">,</span> <span class="err">`</span><span class="nx">translate</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">outerRadius</span><span class="p">},</span><span class="nx">$</span><span class="p">{</span><span class="nx">outerRadius</span><span class="p">})</span><span class="err">`</span><span class="p">);</span>
+
+<span class="c1">//Draw arc paths</span>
+<span class="nx">arcs</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">color</span><span class="p">(</span><span class="nx">i</span><span class="p">))</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="nx">arc</span><span class="p">);</span>
+
+<span class="c1">//Labels</span>
+<span class="nx">arcs</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;transform&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="err">`</span><span class="nx">translate</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">arc</span><span class="p">.</span><span class="nx">centroid</span><span class="p">(</span><span class="nx">d</span><span class="p">)})</span><span class="err">`</span><span class="p">)</span> <span class="c1">//도형의 중심점에 위치시킨다</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;text-anchor&quot;</span><span class="p">,</span> <span class="s2">&quot;middle&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">text</span><span class="p">((</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">d</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
+</pre></div>
+
+</code></pre>
+<ul>
+<li>“Synthia Brewer”: 어떤 색 패턴이 사람에게 잘 인식되는지 실험을 통해 찾은 패턴</li>
+</ul>
+<h2 id="12-3-">12.3 투영법</h2>
+<blockquote>
+<p>3차원 데이터를 2차원에 투영하는 방법 - p268</p>
+</blockquote>
+<ul>
+<li>Jason Davies: <a href="http://www.jasondavies.com/">http://www.jasondavies.com/</a></li>
+<li>D3가 제공하는 Projections: <a href="https://github.com/mbostock/d3/wiki/Geo-Projections">https://github.com/mbostock/d3/wiki/Geo-Projections</a></li>
+<li>D3 Projection 비교 해보기: <a href="http://bl.ocks.org/mbostock/3711652">http://bl.ocks.org/mbostock/3711652</a></li>
+<li>D3로 그린 한국 지도: <a href="http://codefactory.kr/2013/05/17/korea-map/">http://codefactory.kr/2013/05/17/korea-map/</a></li>
+</ul>
+<p id="phr-projection"></p>
+
+<pre><code class="lang-js"><div class="highlight"><pre><span class="c1">//Width and height</span>
+<span class="kr">const</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">300</span><span class="p">;</span>
+
+<span class="c1">//Define map projection</span>
+<span class="kd">var</span> <span class="nx">projection</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">geo</span><span class="p">.</span><span class="nx">albersUsa</span><span class="p">()</span>
+    <span class="c1">//.translate([w/3, h/2]); // 위치</span>
+    <span class="p">.</span><span class="nx">translate</span><span class="p">([</span><span class="nx">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="nx">h</span><span class="o">/</span><span class="mi">2</span><span class="p">])</span>
+    <span class="p">.</span><span class="nx">scale</span><span class="p">([</span><span class="mi">500</span><span class="p">]);</span> <span class="c1">//default 1000</span>
+
+<span class="c1">//Define path generator</span>
+<span class="kd">var</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">geo</span><span class="p">.</span><span class="nx">path</span><span class="p">()</span>
+                 <span class="p">.</span><span class="nx">projection</span><span class="p">(</span><span class="nx">projection</span><span class="p">);</span>
+
+<span class="c1">//Create SVG element</span>
+<span class="kd">var</span> <span class="nx">svg</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;#phr-projection&quot;</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="nx">w</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="nx">h</span><span class="p">);</span>
+
+<span class="c1">//Load in GeoJSON data</span>
+<span class="nx">d3</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="s2">&quot;us-states.json&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">json</span><span class="p">)</span><span class="o">=&gt;</span> <span class="p">{</span>
+
+    <span class="c1">//Bind data and create one path per GeoJSON feature</span>
+    <span class="nx">svg</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">json</span><span class="p">.</span><span class="nx">features</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">enter</span><span class="p">()</span>
+        <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">)</span>
+        <span class="c1">//.attr(&quot;d&quot;, path);</span>
+        <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="nx">path</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s2">&quot;steelblue&quot;</span><span class="p">);</span>
+
+<span class="p">});</span>
+</pre></div>
+
+</code></pre>
+<h2 id="12-4-choropleth-">12.4 단계 구분도(Choropleth)</h2>
+<ul>
+<li>적색주와 청색주: <a href="http://ko.wikipedia.org/wiki/%EC%A0%81%EC%83%89%EC%A3%BC%EC%99%80_%EC%B2%AD%EC%83%89%EC%A3%BC">http://ko.wikipedia.org/wiki/%EC%A0%81%EC%83%89%EC%A3%BC%EC%99%80_%EC%B2%AD%EC%83%89%EC%A3%BC</a><ul>
+<li>영어: <a href="http://en.wikipedia.org/wiki/Red_states_and_blue_states">http://en.wikipedia.org/wiki/Red_states_and_blue_states</a></li>
+<li>단점: 인구 밀도는 낮고 큰 지역 처럼 여러 정보는 표현하기 어렵다.</li>
+</ul>
+</li>
+</ul>
+<p id="phr-choropleth"></p>
+
+<p>데이터 <code>us-ag-productivity-2004.cvs</code>:</p>
+<pre><code><div class="highlight"><pre><span class="nx">state</span><span class="p">,</span><span class="nx">value</span>
+<span class="nx">Alabama</span><span class="p">,</span><span class="mf">1.1791</span>
+<span class="nx">Arkansas</span><span class="p">,</span><span class="mf">1.3705</span>
+<span class="nx">Arizona</span><span class="p">,</span><span class="mf">1.3847</span>
+<span class="nx">California</span><span class="p">,</span><span class="mf">1.7979</span>
+<span class="nx">Colorado</span><span class="p">,</span><span class="mf">1.0325</span>
+</pre></div>
+
+</code></pre><p><code>state,value</code>는 프로퍼티 이름이 된다:</p>
+<blockquote>
+<p>이 데이터는 미국 농무부(USDA)가 제고앟는 데이터로, 2004년 한 해 동안 믹국 각 주별 농작물 생산 능력을 1996년 앨라바바(Alabama) 주 생산량을 1.0으로 삼아 서 표현한 데이터다. 그러므로 클수록 생산성이 좋은 주가 된다.(미 정부 공개 데이터는 <a href="http://data.gov를">http://data.gov를</a> 통해 제공된다. - p271</p>
+</blockquote>
+<pre><code><div class="highlight"><pre><span class="p">[</span>
+    <span class="p">{</span>
+        <span class="nx">state</span><span class="o">:</span> <span class="s2">&quot;Alabama&quot;</span><span class="p">,</span>
+        <span class="nx">value</span><span class="o">:</span> <span class="s2">&quot;1.1791&quot;</span>
+    <span class="p">},</span>
+    <span class="p">...</span>
+<span class="p">]</span>
+</pre></div>
+
+</code></pre><p>Choropleth 그리기:</p>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="c1">//Width and height</span>
+<span class="kr">const</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">300</span><span class="p">;</span>
+
+<span class="c1">//Define map projection</span>
+<span class="kd">var</span> <span class="nx">projection</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">geo</span><span class="p">.</span><span class="nx">albersUsa</span><span class="p">()</span>
+                       <span class="p">.</span><span class="nx">translate</span><span class="p">([</span><span class="nx">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="nx">h</span><span class="o">/</span><span class="mi">2</span><span class="p">])</span>
+                       <span class="p">.</span><span class="nx">scale</span><span class="p">([</span><span class="mi">500</span><span class="p">]);</span>
+
+<span class="c1">//Define path generator</span>
+<span class="kd">var</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">geo</span><span class="p">.</span><span class="nx">path</span><span class="p">()</span>
+                 <span class="p">.</span><span class="nx">projection</span><span class="p">(</span><span class="nx">projection</span><span class="p">);</span>
+
+<span class="c1">//Define quantize scale to sort data values into buckets of color</span>
+<span class="kd">var</span> <span class="nx">color</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">quantize</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">range</span><span class="p">([</span><span class="s2">&quot;rgb(237,248,233)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;rgb(186,228,179)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;rgb(116,196,118)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;rgb(49,163,84)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;rgb(0,109,44)&quot;</span><span class="p">]);</span>
+        <span class="c1">//Colors taken from colorbrewer.js, included in the D3 download</span>
+        <span class="c1">//domain은 선형이지만 치역이 5개로 매핑됨.</span>
+        <span class="c1">//domain은 데이터에서 min, max로 추출한다.</span>
+
+<span class="c1">//Create SVG element</span>
+<span class="kd">var</span> <span class="nx">svg</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;#phr-choropleth&quot;</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="nx">w</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="nx">h</span><span class="p">);</span>
+
+<span class="c1">//Load in agriculture data</span>
+<span class="nx">d3</span><span class="p">.</span><span class="nx">csv</span><span class="p">(</span><span class="s2">&quot;us-ag-productivity-2004.csv&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span><span class="o">=&gt;</span> <span class="p">{</span>
+
+    <span class="c1">//Set input domain for color scale</span>
+    <span class="nx">color</span><span class="p">.</span><span class="nx">domain</span><span class="p">([</span>
+        <span class="nx">d3</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">d</span><span class="p">.</span><span class="nx">value</span><span class="p">),</span>
+        <span class="nx">d3</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">d</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span>
+    <span class="p">]);</span>
+
+    <span class="c1">//Load in GeoJSON data</span>
+    <span class="nx">d3</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="s2">&quot;us-states.json&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">json</span><span class="p">)</span><span class="o">=&gt;</span> <span class="p">{</span>
+
+        <span class="c1">//Merge the ag. data and GeoJSON</span>
+        <span class="c1">//Loop through once for each ag. data value</span>
+        <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">x</span> <span class="nx">of</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">//Find the corresponding state inside the GeoJSON</span>
+            <span class="kd">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">features</span><span class="p">.</span><span class="nx">find</span><span class="p">((</span><span class="nx">f</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">x</span><span class="p">.</span><span class="nx">state</span> <span class="o">==</span> <span class="nx">f</span><span class="p">.</span><span class="nx">properties</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
+
+            <span class="k">if</span><span class="p">(</span><span class="nx">f</span><span class="p">){</span>
+                <span class="nx">f</span><span class="p">.</span><span class="nx">properties</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">x</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="c1">//Bind data and create one path per GeoJSON feature</span>
+        <span class="nx">svg</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">json</span><span class="p">.</span><span class="nx">features</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">enter</span><span class="p">()</span>
+            <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="nx">path</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="p">{</span>
+                 <span class="c1">//Get data value</span>
+                 <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">d</span><span class="p">.</span><span class="nx">properties</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+
+                 <span class="k">return</span> <span class="nx">value</span><span class="o">?</span> <span class="nx">color</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span><span class="o">:</span> <span class="s2">&quot;#ccc&quot;</span><span class="p">;</span>
+            <span class="p">});</span>
+    <span class="p">});</span>
+
+<span class="p">});</span>
+</pre></div>
+
+</code></pre>
+<h2 id="12-5-">12.5 포인트 지점 추가하기.</h2>
+<p id="phr-point"></p>
+
+<p><code>us-cities.csv</code>:</p>
+<pre><code><div class="highlight"><pre><span class="nx">rank</span><span class="p">,</span><span class="nx">place</span><span class="p">,</span><span class="nx">population</span><span class="p">,</span><span class="nx">lat</span><span class="p">,</span><span class="nx">lon</span>
+<span class="mi">1</span><span class="p">,</span><span class="nx">New</span> <span class="nx">York</span> <span class="nx">city</span><span class="p">,</span><span class="mi">8175133</span><span class="p">,</span><span class="mf">40.71455</span><span class="p">,</span><span class="o">-</span><span class="mf">74.007124</span>
+<span class="mi">2</span><span class="p">,</span><span class="nx">Los</span> <span class="nx">Angeles</span> <span class="nx">city</span><span class="p">,</span><span class="mi">3792621</span><span class="p">,</span><span class="mf">34.05349</span><span class="p">,</span><span class="o">-</span><span class="mf">118.245323</span>
+<span class="mi">3</span><span class="p">,</span><span class="nx">Chicago</span> <span class="nx">city</span><span class="p">,</span><span class="mi">2695598</span><span class="p">,</span><span class="mf">45.37399</span><span class="p">,</span><span class="o">-</span><span class="mf">92.888759</span>
+<span class="mi">4</span><span class="p">,</span><span class="nx">Houston</span> <span class="nx">city</span><span class="p">,</span><span class="mi">2099451</span><span class="p">,</span><span class="mf">41.337462</span><span class="p">,</span><span class="o">-</span><span class="mf">75.733627</span>
+</pre></div>
+
+</code></pre><ul>
+<li>데이터 만들기(저자의 Favorite): <a href="http://www.gpsvisualizer.com/geocoder/">http://www.gpsvisualizer.com/geocoder/</a></li>
+<li>데이터 수동 확인: <a href="http://teczno.com/squares">http://teczno.com/squares</a></li>
+</ul>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="c1">//Width and height</span>
+<span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">300</span><span class="p">;</span>
+
+<span class="c1">//Define map projection</span>
+<span class="kd">var</span> <span class="nx">projection</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">geo</span><span class="p">.</span><span class="nx">albersUsa</span><span class="p">()</span>
+                   <span class="p">.</span><span class="nx">translate</span><span class="p">([</span><span class="nx">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="nx">h</span><span class="o">/</span><span class="mi">2</span><span class="p">])</span>
+                   <span class="p">.</span><span class="nx">scale</span><span class="p">([</span><span class="mi">500</span><span class="p">]);</span>
+
+<span class="c1">//Define path generator</span>
+<span class="kd">var</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">geo</span><span class="p">.</span><span class="nx">path</span><span class="p">()</span>
+             <span class="p">.</span><span class="nx">projection</span><span class="p">(</span><span class="nx">projection</span><span class="p">);</span>
+
+<span class="c1">//Define quantize scale to sort data values into buckets of color</span>
+<span class="kd">var</span> <span class="nx">color</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">quantize</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">range</span><span class="p">([</span><span class="s2">&quot;rgb(237,248,233)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;rgb(186,228,179)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;rgb(116,196,118)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;rgb(49,163,84)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;rgb(0,109,44)&quot;</span><span class="p">]);</span>
+    <span class="c1">//Colors taken from colorbrewer.js, included in the D3 download</span>
+
+<span class="c1">//Create SVG element</span>
+<span class="kd">var</span> <span class="nx">svg</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;#phr-point&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="nx">w</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="nx">h</span><span class="p">);</span>
+
+<span class="c1">//Load in agriculture data</span>
+<span class="nx">d3</span><span class="p">.</span><span class="nx">csv</span><span class="p">(</span><span class="s2">&quot;us-ag-productivity-2004.csv&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="c1">//Set input domain for color scale</span>
+    <span class="nx">color</span><span class="p">.</span><span class="nx">domain</span><span class="p">([</span>
+        <span class="nx">d3</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">d</span><span class="p">.</span><span class="nx">value</span><span class="p">),</span>
+        <span class="nx">d3</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">d</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span>
+    <span class="p">]);</span>
+
+    <span class="c1">//Load in GeoJSON data</span>
+    <span class="nx">d3</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="s2">&quot;us-states.json&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">json</span><span class="p">)</span><span class="o">=&gt;</span> <span class="p">{</span>
+
+        <span class="c1">//Merge the ag. data and GeoJSON</span>
+        <span class="c1">//Loop through once for each ag. data value</span>
+        <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">x</span> <span class="nx">of</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">//Find the corresponding state inside the GeoJSON</span>
+            <span class="kd">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">features</span><span class="p">.</span><span class="nx">find</span><span class="p">((</span><span class="nx">f</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">x</span><span class="p">.</span><span class="nx">state</span> <span class="o">==</span> <span class="nx">f</span><span class="p">.</span><span class="nx">properties</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
+
+            <span class="k">if</span><span class="p">(</span><span class="nx">f</span><span class="p">){</span>
+                <span class="nx">f</span><span class="p">.</span><span class="nx">properties</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">x</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="c1">//Bind data and create one path per GeoJSON feature</span>
+        <span class="nx">svg</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">json</span><span class="p">.</span><span class="nx">features</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">enter</span><span class="p">()</span>
+            <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="nx">path</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="p">{</span>
+                 <span class="c1">//Get data value</span>
+                 <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">d</span><span class="p">.</span><span class="nx">properties</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+
+                 <span class="k">return</span> <span class="nx">value</span><span class="o">?</span> <span class="nx">color</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span><span class="o">:</span> <span class="s2">&quot;#ccc&quot;</span><span class="p">;</span>
+            <span class="p">});</span>
+    <span class="p">});</span>
+
+    <span class="c1">//Load in cities data</span>
+    <span class="nx">d3</span><span class="p">.</span><span class="nx">csv</span><span class="p">(</span><span class="s2">&quot;us-cities.csv&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="nx">svg</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;circle&quot;</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">enter</span><span class="p">()</span>
+            <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;circle&quot;</span><span class="p">)</span>
+            <span class="c1">// scale은 파라미터가 하나고 리턴값이 하나인 함수지만</span>
+            <span class="c1">// projection은 파라미터가 두 개고 리턴값이 두 개인 함수.</span>
+            <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;cx&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">projection</span><span class="p">([</span><span class="nx">d</span><span class="p">.</span><span class="nx">lon</span><span class="p">,</span> <span class="nx">d</span><span class="p">.</span><span class="nx">lat</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;cy&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">projection</span><span class="p">([</span><span class="nx">d</span><span class="p">.</span><span class="nx">lon</span><span class="p">,</span> <span class="nx">d</span><span class="p">.</span><span class="nx">lat</span><span class="p">])[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="c1">// Scale을 적용해봄직하다.</span>
+            <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">population</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.00004</span><span class="p">))</span>
+            <span class="c1">//.attr(&quot;r&quot;, 5)</span>
+            <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;opacity&quot;</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">);</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+
+</code></pre>
+<h2 id="12-6-">12.6 지오데이터 취득과 분석.</h2>
+<h3 id="1-shape-">1. shape 파일 찾기</h3>
+<ul>
+<li>포멧은 지리 정보 시스템(GIS) 소프트웨어를 사용되는 포멧 - p279</li>
+<li>적당한 GeoJSON 데이터를 찾을 수 없으면 Shape 파일 찾자.<ul>
+<li>Natural Earth(<a href="http://www.naturalearthdata.com">http://www.naturalearthdata.com</a>): 방대한 지리정보의 보고, 오픈</li>
+<li>The United States Census: <a href="http://www.census.gov/geo/www/cob/cbf_state.html">http://www.census.gov/geo/www/cob/cbf_state.html</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="2-">2. 축척을 선택</h3>
+<p>자료마다 축척이 다를 수도 있지만, 미국 인구조사 세이프 파은 대부분 다음 세가지 중 하나:</p>
+<ul>
+<li>1:500,000(1:500k)</li>
+<li>1:5,000,000(1:5m)</li>
+<li>1:20,000,000(1:20m)</li>
+</ul>
+<p>소축척, 대축척, 고추척:</p>
+<ul>
+<li>소축척: 1:500k -&gt; 1: 5m -&gt; 1: 20m</li>
+<li>대축척, 고추척: 1:500k &lt;- 1: 5m &lt;- 1:20m</li>
+</ul>
+<p>Natural Earth에서 가장 축척이 작은 오대양 지도(1:110m):</p>
+<p><a href="http://www.naturalearthdata.com/downloads/110m-physical-vectors/110m-ocean/">http://www.naturalearthdata.com/downloads/110m-physical-vectors/110m-ocean/</a></p>
+<h3 id="3-">3. 세이프를 단순화</h3>
+<ul>
+<li>마이크 보스탁의 라인을 단순화하는 데모: <a href="http://bost.ocks.org/mike/simplify/">http://bost.ocks.org/mike/simplify/</a><ul>
+<li>D3.simplify 플러그인 사용</li>
+</ul>
+</li>
+<li>Matt Bloch의 MapShaper: <a href="http://mapshaper.org">http://mapshaper.org</a><ul>
+<li>지도를 단순화 해서 Shapefile, GeoJSON, TopoJSON로 변환할 수 있다.</li>
+<li>사용번 p282에 설명함</li>
+</ul>
+</li>
+<li>JavaScript 라이브러리<ul>
+<li>Mike Migurski의 Bloch: <a href="https://github.com/migurski/Bloch">https://github.com/migurski/Bloch</a></li>
+<li>D3.simplify 플러그인: TopoJSON으로 대체됨.</li>
+</ul>
+</li>
+<li>기하학적 단순화 프로젝트 TopoJSON(<a href="https://github.com/mbostock/topojson">https://github.com/mbostock/topojson</a>)<ul>
+<li>GeoJSON 보다 신상이며 효율적</li>
+<li><a href="http://bl.ocks.org/4090870">http://bl.ocks.org/4090870</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="4-geojson-">4. GeoJSON으로 변환</h3>
+<p>Shapefile을 GeoJSON으로 변환하는 <strong>ogr2ogr</strong> 명령어 사용법이 책에 잘 설명돼 있음.</p>
+<p>마지막으로 투영법(Projection)을 변경해보는 예제:</p>
+<p id="phr-mercator"></p>
+
+<pre><code class="lang-js"><div class="highlight"><pre><span class="c1">//Width and height</span>
+<span class="kr">const</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">700</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+
+<span class="c1">//Define map projection</span>
+<span class="c1">//var projection = d3.geo.albersUsa()</span>
+<span class="kd">var</span> <span class="nx">projection</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">geo</span><span class="p">.</span><span class="nx">mercator</span><span class="p">()</span>
+                       <span class="p">.</span><span class="nx">translate</span><span class="p">([</span><span class="nx">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="nx">h</span><span class="o">/</span><span class="mi">2</span><span class="p">])</span>
+                       <span class="p">.</span><span class="nx">scale</span><span class="p">([</span><span class="mi">100</span><span class="p">]);</span>
+
+<span class="c1">//Define path generator</span>
+<span class="kd">var</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">geo</span><span class="p">.</span><span class="nx">path</span><span class="p">()</span>
+                 <span class="p">.</span><span class="nx">projection</span><span class="p">(</span><span class="nx">projection</span><span class="p">);</span>
+
+<span class="c1">//Create SVG element</span>
+<span class="kd">var</span> <span class="nx">svg</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;#phr-mercator&quot;</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="nx">w</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="nx">h</span><span class="p">);</span>
+
+<span class="c1">//Load in GeoJSON data</span>
+<span class="nx">d3</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="s2">&quot;oceans.json&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">json</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="c1">//Bind data and create one path per GeoJSON feature</span>
+    <span class="nx">svg</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">json</span><span class="p">.</span><span class="nx">features</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">enter</span><span class="p">()</span>
+       <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="nx">path</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s2">&quot;steelblue&quot;</span><span class="p">);</span>
+
+<span class="p">});</span>
+</pre></div>
+
+</code></pre>
+<script>
+    runLangJs();
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+</div>
+        </div>
+    </article>
+
+    <span id="script-holder"></span>
+</section>
+
+        </div>
+        <footer class="footer">
+            <p>Copyright &copy; 2015+ Changwoo Park</p>
+            <p><small>Powered by <a href="https://github.com/pismute/gulp-makdoc">makdoc</a>, <a href="http://fezvrasta.github.io/bootstrap-material-design/">bootstrap-material-design</a></small></p>
+        </footer>
+    </div>
+
+    <script async defer
+        src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+    <script async defer
+        src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+    <script async defer
+        src="/scripts/script.js"></script>
+
+    <script
+        src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.2.2/js/ripples.min.js"></script>
+    <script
+        src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.2.2/js/material.min.js"></script>
+    <script>
+        $(function(){
+            $.material.init();
+        });
+    </script>
+
+    <script>
+
+    </script>
+</body>
+</html>

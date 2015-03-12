@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf=8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+
+    <title>d3js: chapter 6. drawing with data</title>
+    <meta name="description"
+        content="이 글은 http://infovis.kr 스터디 하면서 작성했고 d3.js 6장의 내용이다."></meta>
+    <meta name="keywords"
+        content="d3,infoviz"></meta>
+    <meta name="author"
+        content="Changwoo Park"></meta>
+
+    <link rel="shortcut icon" href="images/favicon.ico"></link>
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png"></link>
+    <link rel="apple-touch-icon" sizes="72x72"
+        href=" ='images/apple-touch-icon-72x72.png"></link>
+    <link rel="apple-touch-icon" sizes="114x114"
+        href="images/apple-touch-icon-114x114.png"></link>
+    <link rel="alternate" type="application/atom+xml"
+        title="d3js: chapter 6. drawing with data &raquo; Feed"
+        href="https://pismute.github.io/atom.xml"></link>
+
+    <link rel="stylesheet" media="screen, projection"
+        href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"></link>
+    <link rel="stylesheet" media="screen, projection"
+        href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.2.2/css/material-wfont.css"></link>
+    <link rel="stylesheet" media="screen, projection"
+        href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.2.2/css/ripples.css"></link>
+    <link rel="stylesheet" media="screen, projection"
+        href="/styles/style.css"></link>
+</head>
+
+<body>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.5.0/lodash.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed"
+                    data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">@</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/site/archive.html">Archive</a></li>
+                    <li><a href="/site/keyword-map.html">Keyword Map</a></li>
+                </ul>
+                <form id="search-form" class="navbar-form navbar-right"
+                        action="http://google.com/search" method="get">
+                    <input type="hidden" name="q"
+                        value="site:pismute.github.io"></input>
+                    <input class="form-control" type="text"
+                        name="q" results="0" placeholder="Search..."></input>
+                </form>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+    <div class="container">
+        <div>
+          <link rel="stylesheet" media="screen, projection"
+    href="/styles/github.css"></link>
+<link rel="stylesheet" media="screen, projection"
+    href="/styles/pygment-github.css"></link>
+<link rel="stylesheet" media="screen, projection"
+    href="/styles/markdown.css"></link>
+
+<script async defer
+    src="/babel.js"></script>
+<script async defer>
+    function runLangJs(){
+        $(function(){ //defer
+            $('.lang-js').each(function(){
+                var script = document.createElement('script');
+                script.type = "text/babel";
+                $(script).text('(function(){\n' + $(this).text() + '\n})()');
+
+                $('#script-holder').append(script);
+            });
+        });
+    }
+</script>
+<section class="content">
+    <article id="post" class="row post " typeof="sioc:post" about="/d3js/06-drawing-with-data.html" lang="ko-kr">
+        <div class="col-sm-2 small-font">
+            <br /><br />
+            <p property="dc:created">2015 Jan 25</p>
+
+            <p class="small-font top-line"><a href="/site/keyword-map.html#d3" class="keyword">d3</a> <a href="/site/keyword-map.html#infoviz" class="keyword">infoviz</a></p>
+        </div>
+
+        <div class="col-sm-10">
+            <div property="sioc:content"><h1 id="d3js-chapter-6-drawing-with-data">d3js: chapter 6. drawing with data</h1>
+<blockquote>
+<p>이 글은 <a href="http://infovis.kr">http://infovis.kr</a> 스터디 하면서 작성했고 <a href="http://www.aladin.co.kr/shop/wproduct.aspx?ISBN=896626106X">d3.js</a> 6장의 내용이다.</p>
+</blockquote>
+<h2 id="6-3-1-svg-">6.3.1 SVG를 만들어 보자</h2>
+<p id="phr-svg-sample"></p>
+
+<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="kd">var</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">25</span><span class="p">];</span>
+
+<span class="kd">var</span> <span class="nx">svg</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;#phr-svg-sample&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;svg&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="nx">w</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="nx">h</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">circle</span> <span class="o">=</span> <span class="nx">svg</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;circle&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dataset</span><span class="p">);</span>
+
+<span class="nx">circle</span><span class="p">.</span><span class="nx">enter</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;circle&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;cx&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">,</span><span class="nx">i</span><span class="p">)</span><span class="o">=&gt;</span> <span class="p">(</span><span class="nx">i</span><span class="o">*</span><span class="mi">50</span><span class="p">)</span> <span class="o">+</span> <span class="mi">25</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;cy&#39;</span><span class="p">,</span> <span class="nx">h</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">d</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;fill&#39;</span><span class="p">,</span> <span class="s1">&#39;yellow&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;stroke&#39;</span><span class="p">,</span> <span class="s1">&#39;orange&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;stroke-width&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">d</span><span class="o">/</span><span class="mi">2</span><span class="p">);</span>
+</pre></div>
+
+</code></pre>
+<h2 id="6-4-">6.4 막대 차트 만들기.</h2>
+<p id="phr-bar-chart"></p>
+
+<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="kd">var</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span>
+    <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">25</span><span class="p">];</span>
+<span class="kd">var</span> <span class="nx">barPadding</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">svg</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;#phr-bar-chart&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;svg&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="nx">w</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="nx">h</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">rect</span> <span class="o">=</span> <span class="nx">svg</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;rect&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dataset</span><span class="p">);</span>
+
+<span class="nx">rect</span><span class="p">.</span><span class="nx">enter</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;rect&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">i</span> <span class="o">*</span> <span class="p">(</span><span class="nx">w</span><span class="o">/</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">length</span><span class="p">))</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">h</span> <span class="o">-</span> <span class="nx">d</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="nx">w</span><span class="o">/</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="nx">barPadding</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">d</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="err">`</span><span class="nx">rgb</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">$d</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span><span class="err">`</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">text</span> <span class="o">=</span> <span class="nx">svg</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dataset</span><span class="p">);</span>
+
+<span class="nx">text</span><span class="p">.</span><span class="nx">enter</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">text</span><span class="p">((</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">d</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">i</span> <span class="o">*</span> <span class="p">(</span><span class="nx">w</span><span class="o">/</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="nx">w</span><span class="o">/</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="nx">barPadding</span><span class="p">)</span> <span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">h</span> <span class="o">-</span> <span class="p">(</span><span class="nx">d</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="mi">14</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;font-family&#39;</span><span class="p">,</span> <span class="s1">&#39;sans-serif&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;font-size&#39;</span><span class="p">,</span> <span class="s1">&#39;11px&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;fill&#39;</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;text-anchor&#39;</span><span class="p">,</span> <span class="s1">&#39;middle&#39;</span><span class="p">);</span>
+</pre></div>
+
+</code></pre>
+<h2 id="6-5-scatterplot-">6.5 산포도(scatterplot) 만들기</h2>
+<p id="phr-scatterplot"></p>
+
+<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="kd">var</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">480</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">33</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">330</span><span class="p">,</span> <span class="mi">95</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">410</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">475</span><span class="p">,</span> <span class="mi">44</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">25</span><span class="p">,</span> <span class="mi">67</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">85</span><span class="p">,</span> <span class="mi">21</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">220</span><span class="p">,</span> <span class="mi">88</span><span class="p">]</span>
+<span class="p">];</span>
+
+<span class="kd">var</span> <span class="nx">svg</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;#phr-scatterplot&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;svg&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="nx">w</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="nx">h</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">circle</span> <span class="o">=</span> <span class="nx">svg</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;circle&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dataset</span><span class="p">);</span>
+
+<span class="nx">circle</span><span class="p">.</span><span class="nx">enter</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;circle&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;cx&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">d</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;cy&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">d</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">h</span><span class="o">-</span><span class="nx">d</span><span class="p">[</span><span class="mi">1</span><span class="p">]));</span>
+
+<span class="kd">var</span> <span class="nx">text</span> <span class="o">=</span> <span class="nx">svg</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dataset</span><span class="p">);</span>
+
+<span class="nx">text</span><span class="p">.</span><span class="nx">enter</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">text</span><span class="p">((</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]},</span> <span class="nx">$</span><span class="p">{</span><span class="nx">d</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span><span class="err">`</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">d</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">d</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;font-family&#39;</span><span class="p">,</span> <span class="s1">&#39;sans-serif&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;font-size&#39;</span><span class="p">,</span> <span class="s1">&#39;11px&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;fill&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">);</span>
+</pre></div>
+
+</code></pre>
+<script>
+    runLangJs();
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+</div>
+        </div>
+    </article>
+
+    <span id="script-holder"></span>
+</section>
+
+        </div>
+        <footer class="footer">
+            <p>Copyright &copy; 2015+ Changwoo Park</p>
+            <p><small>Powered by <a href="https://github.com/pismute/gulp-makdoc">makdoc</a>, <a href="http://fezvrasta.github.io/bootstrap-material-design/">bootstrap-material-design</a></small></p>
+        </footer>
+    </div>
+
+    <script async defer
+        src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+    <script async defer
+        src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+    <script async defer
+        src="/scripts/script.js"></script>
+
+    <script
+        src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.2.2/js/ripples.min.js"></script>
+    <script
+        src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.2.2/js/material.min.js"></script>
+    <script>
+        $(function(){
+            $.material.init();
+        });
+    </script>
+
+    <script>
+
+    </script>
+</body>
+</html>

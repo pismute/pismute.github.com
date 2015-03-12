@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf=8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+
+    <title>d3js: chapter 5. data</title>
+    <meta name="description"
+        content="circle {"></meta>
+    <meta name="keywords"
+        content="d3,infoviz"></meta>
+    <meta name="author"
+        content="Changwoo Park"></meta>
+
+    <link rel="shortcut icon" href="images/favicon.ico"></link>
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png"></link>
+    <link rel="apple-touch-icon" sizes="72x72"
+        href=" ='images/apple-touch-icon-72x72.png"></link>
+    <link rel="apple-touch-icon" sizes="114x114"
+        href="images/apple-touch-icon-114x114.png"></link>
+    <link rel="alternate" type="application/atom+xml"
+        title="d3js: chapter 5. data &raquo; Feed"
+        href="https://pismute.github.io/atom.xml"></link>
+
+    <link rel="stylesheet" media="screen, projection"
+        href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"></link>
+    <link rel="stylesheet" media="screen, projection"
+        href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.2.2/css/material-wfont.css"></link>
+    <link rel="stylesheet" media="screen, projection"
+        href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.2.2/css/ripples.css"></link>
+    <link rel="stylesheet" media="screen, projection"
+        href="/styles/style.css"></link>
+</head>
+
+<body>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.5.0/lodash.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed"
+                    data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">@</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/site/archive.html">Archive</a></li>
+                    <li><a href="/site/keyword-map.html">Keyword Map</a></li>
+                </ul>
+                <form id="search-form" class="navbar-form navbar-right"
+                        action="http://google.com/search" method="get">
+                    <input type="hidden" name="q"
+                        value="site:pismute.github.io"></input>
+                    <input class="form-control" type="text"
+                        name="q" results="0" placeholder="Search..."></input>
+                </form>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+    <div class="container">
+        <div>
+          <link rel="stylesheet" media="screen, projection"
+    href="/styles/github.css"></link>
+<link rel="stylesheet" media="screen, projection"
+    href="/styles/pygment-github.css"></link>
+<link rel="stylesheet" media="screen, projection"
+    href="/styles/markdown.css"></link>
+
+<script async defer
+    src="/babel.js"></script>
+<script async defer>
+    function runLangJs(){
+        $(function(){ //defer
+            $('.lang-js').each(function(){
+                var script = document.createElement('script');
+                script.type = "text/babel";
+                $(script).text('(function(){\n' + $(this).text() + '\n})()');
+
+                $('#script-holder').append(script);
+            });
+        });
+    }
+</script>
+<section class="content">
+    <article id="post" class="row post " typeof="sioc:post" about="/d3js/05-data.html" lang="ko-kr">
+        <div class="col-sm-2 small-font">
+            <br /><br />
+            <p property="dc:created">2015 Jan 25</p>
+
+            <p class="small-font top-line"><a href="/site/keyword-map.html#d3" class="keyword">d3</a> <a href="/site/keyword-map.html#infoviz" class="keyword">infoviz</a></p>
+        </div>
+
+        <div class="col-sm-10">
+            <div property="sioc:content"><h1 id="d3js-chapter-5-data">d3js: chapter 5. data</h1>
+<style>
+circle {
+    fill: none;
+    fill-opacity: .2;
+    stroke: black;
+    stroke-width: 1.5px;
+</style>
+
+<blockquote>
+<p>이 글은 <a href="http://infovis.kr">http://infovis.kr</a> 스터디 하면서 작성했고 <a href="http://www.aladin.co.kr/shop/wproduct.aspx?ISBN=896626106X">d3.js</a> 5장의 내용이다.</p>
+</blockquote>
+<p id="phr-scatch"></p>
+
+<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">25</span><span class="p">];</span>
+
+<span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;#phr-scatch&#39;</span><span class="p">).</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dataset</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">enter</span><span class="p">()</span>
+        <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">text</span><span class="p">((</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="err">`</span><span class="nx">$d</span><span class="o">:</span> <span class="nx">New</span> <span class="nx">paragraph</span><span class="o">!</span><span class="err">`</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="p">(</span><span class="nx">d</span><span class="o">&gt;</span><span class="mi">15</span><span class="p">)</span><span class="o">?</span> <span class="s1">&#39;red&#39;</span><span class="o">:</span> <span class="s1">&#39;black&#39;</span><span class="p">);</span>
+</pre></div>
+
+</code></pre>
+<h3 id="data-join-thinking-with-joins-mike-bostocks-http-bost-ocks-org-mike-join-">Data Join - <a href="http://bost.ocks.org/mike/join/">Thinking with Joins - mike bostocks</a></h3>
+<p><code>selectAll(&quot;circle&quot;)</code>은 “circle” 엘리먼트랑 data랑 역는 행위:</p>
+<p id="phr-join"></p>
+
+<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">svg</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;#phr-join&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">720</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="mi">240</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;transform&quot;</span><span class="p">,</span> <span class="s2">&quot;translate(0,128)&quot;</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="nx">svg</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;transform&quot;</span><span class="p">,</span> <span class="s2">&quot;translate(300)&quot;</span><span class="p">);</span>
+
+<span class="nx">data</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;circle&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s2">&quot;#3182bd&quot;</span><span class="p">);</span>
+
+<span class="nx">data</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">120</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Data&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;font-weight&quot;</span><span class="p">,</span> <span class="s2">&quot;bold&quot;</span><span class="p">);</span>
+
+<span class="nx">data</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">50</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Enter&quot;</span><span class="p">);</span>
+
+<span class="nx">svg</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mi">360</span><span class="p">).</span>
+    <span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Update&quot;</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">elements</span> <span class="o">=</span> <span class="nx">svg</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;transform&quot;</span><span class="p">,</span> <span class="s2">&quot;translate(420)&quot;</span><span class="p">);</span>
+
+<span class="nx">elements</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;circle&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s2">&quot;#e6550d&quot;</span><span class="p">);</span>
+
+<span class="nx">elements</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">120</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Elements&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;font-weight&quot;</span><span class="p">,</span> <span class="s2">&quot;bold&quot;</span><span class="p">);</span>
+
+<span class="nx">elements</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Exit&quot;</span><span class="p">);</span>
+
+<span class="nx">svg</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;circle&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="mi">110</span><span class="p">);</span>
+
+<span class="nx">svg</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;dy&quot;</span><span class="p">,</span> <span class="s2">&quot;.35em&quot;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;text-anchor&quot;</span><span class="p">,</span> <span class="s2">&quot;middle&quot;</span><span class="p">);</span>
+</pre></div>
+
+</code></pre>
+<ul>
+<li>update(inner) selection: Data points joined to <strong>existing elements</strong></li>
+<li>enter(left) selection: Leftover <strong>unbound data</strong> produce the enter</li>
+<li>exit(right) selection: <strong>any remaining unbound elements</strong></li>
+</ul>
+<p>update/enter/exit selection을 어떤식으로 코딩해야 할지는 <a href="http://bl.ocks.org/mbostock/3808218">General Update Pattern, I</a>를 보는게 좋다.</p>
+<h4 id="update-exit-selection-">Update/Exit Selection:</h4>
+<div id="phr-join-update">
+    <p></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <div></div>
+    <div></div>
+</div>
+
+<pre><code class="lang-html"><div class="highlight"><pre><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;phr-join-update&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;p&gt;&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;&lt;/p&gt;</span>
+    <span class="nt">&lt;div&gt;&lt;/div&gt;</span> //no selection
+    <span class="nt">&lt;div&gt;&lt;/div&gt;</span> //no selection
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+
+</code></pre>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">];</span>
+
+<span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;#phr-join-update&#39;</span><span class="p">).</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dataset</span><span class="p">)</span> <span class="c1">//return update selection</span>
+        <span class="p">.</span><span class="nx">text</span><span class="p">(</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="err">`</span><span class="nx">$d</span><span class="o">:</span> <span class="nx">update</span> <span class="nx">selection</span><span class="err">`</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">exit</span><span class="p">()</span>
+        <span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="s1">&#39;exit selection&#39;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">);</span>
+</pre></div>
+
+</code></pre>
+<h4 id="enter-selection-">Enter Selection:</h4>
+<div id="phr-join-enter">
+    <p></p>
+    <p></p>
+    <p></p>
+</div>
+
+<pre><code class="lang-html"><div class="highlight"><pre><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;phr-join-enter&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;p&gt;&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+
+</code></pre>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">];</span>
+
+<span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;#phr-join-enter&#39;</span><span class="p">).</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dataset</span><span class="p">)</span> <span class="c1">//return update selection</span>
+        <span class="p">.</span><span class="nx">text</span><span class="p">(</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="err">`</span><span class="nx">$d</span><span class="o">:</span> <span class="nx">update</span> <span class="nx">selection</span><span class="err">`</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">enter</span><span class="p">()</span>    <span class="c1">//return enter selection</span>
+        <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">text</span><span class="p">(</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="err">`</span><span class="nx">$d</span><span class="o">:</span> <span class="nx">enter</span> <span class="nx">selection</span><span class="err">`</span> <span class="p">)</span>
+        <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">);</span>
+</pre></div>
+
+</code></pre>
+<h4 id="transition">Transition</h4>
+<p>d3js 책 9장에서 배운다:</p>
+<script>
+    runLangJs()
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+</div>
+        </div>
+    </article>
+
+    <span id="script-holder"></span>
+</section>
+
+        </div>
+        <footer class="footer">
+            <p>Copyright &copy; 2015+ Changwoo Park</p>
+            <p><small>Powered by <a href="https://github.com/pismute/gulp-makdoc">makdoc</a>, <a href="http://fezvrasta.github.io/bootstrap-material-design/">bootstrap-material-design</a></small></p>
+        </footer>
+    </div>
+
+    <script async defer
+        src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+    <script async defer
+        src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+    <script async defer
+        src="/scripts/script.js"></script>
+
+    <script
+        src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.2.2/js/ripples.min.js"></script>
+    <script
+        src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.2.2/js/material.min.js"></script>
+    <script>
+        $(function(){
+            $.material.init();
+        });
+    </script>
+
+    <script>
+
+    </script>
+</body>
+</html>
