@@ -72,12 +72,91 @@
     <title><![CDATA[  ]]></title>
     <link href="https://pismute.github.io/'atom.xml'}}}" rel="self" />
     <link href="https://pismute.github.io/" />
-    <updated>2015-03-16T08:06:37.786Z</updated>
+    <updated>2015-04-01T17:04:03.375Z</updated>
     <id>https://pismute.github.io/</id>
+    <entry>
+    <title><![CDATA[ dashbars ]]></title>
+    <link herf="http://pismute.github.io/2015/dashbars.html" />
+    <updated>2015-04-01T17:04:03.378Z</updated>
+    <id>http://pismute.github.io/2015/dashbars.html</id>
+    <content type="html"><![CDATA[
+        <h1 id="dashbars">dashbars</h1>
+<blockquote>
+<p><a href="http://handlebarsjs.com/">Handlebarsjs</a>용 헬퍼 라이브러리. <a href="https://github.com/magnars/dash.el">dash.el</a>, <a href="https://github.com/magnars/s.el">s.el</a>, <a href="https://github.com/rejeep/f.el">f.el</a>, <a href="https://github.com/assemble/handlebars-helpers">handlebars-helpers</a>을 참고해서 만들었다.</p>
+</blockquote>
+<pre><code><div class="highlight"><pre><span class="p">{{</span><span class="o">-</span><span class="nx">take</span> <span class="mi">5</span> <span class="p">(</span><span class="o">-</span><span class="nx">drop</span> <span class="mi">3</span> <span class="p">(</span><span class="o">-</span><span class="nx">range</span> <span class="mi">0</span> <span class="mi">10</span><span class="p">))}}</span> <span class="c1">// [3,4,5,6,7]</span>
+<span class="p">{{</span><span class="o">-</span><span class="nx">slice</span> <span class="mi">0</span> <span class="mi">5</span> <span class="p">(</span><span class="o">-</span><span class="nx">range</span> <span class="mi">0</span> <span class="mi">10</span><span class="p">)}}</span> <span class="c1">// [0,1,2,3,4]</span>
+
+<span class="p">{{</span><span class="err">#</span><span class="nx">each</span> <span class="p">(</span><span class="o">-</span><span class="nx">take</span> <span class="mi">5</span> <span class="p">(</span><span class="o">-</span><span class="nx">drop</span> <span class="mi">3</span> <span class="p">(</span><span class="o">-</span><span class="nx">range</span> <span class="mi">0</span> <span class="mi">10</span><span class="p">)))}}</span> <span class="c1">// [3,4,5,6,7]</span>
+    <span class="p">...</span>
+<span class="p">{{</span><span class="k">else</span><span class="p">}}</span>
+    <span class="p">...</span>
+<span class="p">{{</span><span class="err">/each}}</span>
+
+<span class="p">{{</span><span class="err">#</span><span class="k">if</span> <span class="p">(</span><span class="o">-</span><span class="nx">lt</span><span class="o">?</span> <span class="mi">3</span> <span class="nx">myVar</span><span class="p">)}}</span> <span class="c1">// 3 &lt; myVar</span>
+    <span class="p">...</span>
+<span class="p">{{</span><span class="k">else</span><span class="p">}}</span>
+    <span class="p">...</span>
+<span class="p">{{</span><span class="err">/if}}</span>
+</pre></div>
+
+</code></pre><h2 id="handlebars-subexpression">Handlebars의 Subexpression</h2>
+<p><a href="http://handlebarsjs.com/">Handlebarsjs</a>는 <code>{{}}</code> 와 같은 템플릿을 사용하는데 Subexpression을 지원한다. 아래처럼 생겼다:</p>
+<pre><code><div class="highlight"><pre><span class="p">{{</span><span class="nx">outer</span><span class="o">-</span><span class="nx">helper</span> <span class="p">(</span><span class="nx">inner</span><span class="o">-</span><span class="nx">helper</span> <span class="s1">&#39;abc&#39;</span><span class="p">)</span> <span class="s1">&#39;def&#39;</span><span class="p">}}</span>
+</pre></div>
+
+</code></pre><p>그러니까 기본 적으로 헬퍼는 <code>{{operator operand1 operand2 ...}}</code> 식으로 사용할 수 있고 Subexpresion도 가능해서 <code>{{operator (operator ...) ...}}</code>와 같은 형식이 가능하다. 중첩도 돼서 <code>{{operator (operator (operator ...)) ...}}</code>와 같은 형식도 가능하다.</p>
+<p>이 모습은 lisp이랑 닮았다. 함수를 바로 정의해서 사용할 수 없는 점을 제외하면 lisp이랑 닮았다. lisp의 <a href="https://github.com/magnars/dash.el">dash.el</a>같은 라이브러리가 <a href="http://handlebarsjs.com/">Handlebarsjs</a>에도 필요하다고 생각이 들었다. 그래서 <a href="https://github.com/pismute/dashbars">dashbars</a>라는 헬퍼 라이브러리를 만들었다.</p>
+<h2 id="dashbars">Dashbars</h2>
+<p>이름은 <a href="https://github.com/magnars/dash.el">dash.el</a>에서 따왔고 <a href="https://github.com/magnars/dash.el">dash.el</a>, <a href="https://github.com/rejeep/f.el">f.el</a>, <a href="https://github.com/magnars/s.el">s.el</a>, <a href="https://github.com/assemble/handlebars-helpers">handlebars-helpers</a>를 참고해서 만들었다.</p>
+<p>되도록 JavaScript의 기본 API를 사용했고 없으면 <code>lodash</code>를 사용했다. 이렇게 성능은 브라우저와 lodash에게 묻어 간다. ㅎㅎ</p>
+<h3 id="-">함수</h3>
+<p><a href="http://handlebarsjs.com/">Handlebarsjs</a>에서는 함수를 정의할 수 없기 때문에 따로 헬퍼 함수를 정의하고 함수 이름을 사용하도록 했다. 아래와 같이 헬퍼를 정의하면:</p>
+<pre><code><div class="highlight"><pre><span class="nx">Handlebars</span><span class="p">.</span><span class="nx">registerHelper</span><span class="p">(</span><span class="s1">&#39;-as-is&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">o</span><span class="p">){</span>
+    <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
+<span class="p">});</span>
+</pre></div>
+
+</code></pre><p><code>-map</code> 헬퍼에 <code>-as-is</code>라는 헬퍼를 넘긴다.</p>
+<pre><code><div class="highlight"><pre><span class="p">{{</span><span class="o">-</span><span class="nx">map</span> <span class="s1">&#39;-as-is&#39;</span> <span class="p">(</span><span class="o">-</span><span class="nx">range</span> <span class="mi">0</span> <span class="mi">5</span><span class="p">)}}</span> <span class="c1">// [0,1,2,3,4]</span>
+</pre></div>
+
+</code></pre><h3 id="-">좀 더 함수형으로</h3>
+<p>아규먼트로 받은 리스트나 객체를 그대로 리턴하지 않는다. 리턴하는 객체는 항상 새로운 객체다. <code>-sort</code> 헬퍼의 예를 들면 아래처럼 아규먼트로 받은 리스트를 복사해서(slice) 정렬한다(sort).</p>
+<pre><code><div class="highlight"><pre><span class="nx">registerHelpers</span><span class="p">(</span><span class="s1">&#39;-sort&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">list</span><span class="p">,</span> <span class="nx">compare</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">list</span><span class="p">.</span><span class="nx">slice</span><span class="p">().</span><span class="nx">sort</span><span class="p">(</span><span class="nx">compare</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+</code></pre><p>Javascript에서 대부분의 Array 함수들은 새로운 Array를 반환하는데 특이하게도 sort는 새 Array를 반환하지 않는다.</p>
+<h3 id="-">블럭 헬퍼가 없다.</h3>
+<p><a href="https://github.com/pismute/dashbars">dashbars</a>에는 블럭 헬퍼가 없다. 이미 <a href="http://handlebarsjs.com/">Handlebarsjs</a>에 들어 있는 블럭 헬퍼로도 충분하다고 생각한다:</p>
+<pre><code><div class="highlight"><pre><span class="p">{{</span><span class="err">#</span><span class="nx">each</span> <span class="p">(</span><span class="o">-</span><span class="nx">take</span> <span class="mi">5</span> <span class="p">(</span><span class="o">-</span><span class="nx">drop</span> <span class="mi">3</span> <span class="p">(</span><span class="o">-</span><span class="nx">range</span> <span class="mi">0</span> <span class="mi">10</span><span class="p">)))}}</span> <span class="c1">// [3,4,5,6,7]</span>
+    <span class="p">...</span>
+<span class="p">{{</span><span class="k">else</span><span class="p">}}</span>
+    <span class="p">...</span>
+<span class="p">{{</span><span class="err">/each}}</span>
+
+<span class="p">{{</span><span class="err">#</span><span class="k">if</span> <span class="p">(</span><span class="o">-</span><span class="nx">lt</span><span class="o">?</span> <span class="mi">3</span> <span class="nx">myVar</span><span class="p">)}}</span> <span class="c1">// 3 &lt; myVar</span>
+    <span class="p">...</span>
+<span class="p">{{</span><span class="k">else</span><span class="p">}}</span>
+    <span class="p">...</span>
+<span class="p">{{</span><span class="err">/if}}</span>
+</pre></div>
+
+</code></pre><h3 id="predicate">Predicate</h3>
+<p><code>true/false</code>를 리턴하는 Predicate 함수의 이름은 <code>?</code>으로 끝난다.</p>
+<h3 id="nodejs">nodejs</h3>
+<p><code>f-</code>로 시작하는 파일관련 헬퍼는 nodejs에서만 사용할 수 있고 브라우저에서 사용할 수 없다. <code>path</code> 모듈에 크게 의존한다.</p>
+<h3 id="es6">ES6</h3>
+<p>ES6는 아직 고려하지 않았다. 하지만 앞으로 Set, Map, Generator를 지원할 계획이다.</p>
+
+    ]]></content>
+    </entry>
     <entry>
     <title><![CDATA[ d3js: chapter 12. geomapping ]]></title>
     <link herf="http://pismute.github.io/d3js/12-geomapping.html" />
-    <updated>2015-03-16T08:06:37.789Z</updated>
+    <updated>2015-04-01T17:04:03.379Z</updated>
     <id>http://pismute.github.io/d3js/12-geomapping.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-12-geomapping">d3js: chapter 12. geomapping</h1>
@@ -576,7 +655,7 @@
     <entry>
     <title><![CDATA[ d3js: chapter 7. scale ]]></title>
     <link herf="http://pismute.github.io/d3js/07-scale.html" />
-    <updated>2015-03-16T08:06:37.790Z</updated>
+    <updated>2015-04-01T17:04:03.380Z</updated>
     <id>http://pismute.github.io/d3js/07-scale.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-7-scale">d3js: chapter 7. scale</h1>
@@ -1075,7 +1154,7 @@
     <entry>
     <title><![CDATA[ d3js: chapter 8. axis ]]></title>
     <link herf="http://pismute.github.io/d3js/08-axis.html" />
-    <updated>2015-03-16T08:06:37.791Z</updated>
+    <updated>2015-04-01T17:04:03.381Z</updated>
     <id>http://pismute.github.io/d3js/08-axis.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-8-axis">d3js: chapter 8. axis</h1>
@@ -1453,7 +1532,7 @@
     <entry>
     <title><![CDATA[ d3js: chapter 5. data ]]></title>
     <link herf="http://pismute.github.io/d3js/05-data.html" />
-    <updated>2015-03-16T08:06:37.791Z</updated>
+    <updated>2015-04-01T17:04:03.381Z</updated>
     <id>http://pismute.github.io/d3js/05-data.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-5-data">d3js: chapter 5. data</h1>
@@ -1614,7 +1693,7 @@ circle {
     <entry>
     <title><![CDATA[ d3js: chapter 6. drawing with data ]]></title>
     <link herf="http://pismute.github.io/d3js/06-drawing-with-data.html" />
-    <updated>2015-03-16T08:06:37.791Z</updated>
+    <updated>2015-04-01T17:04:03.382Z</updated>
     <id>http://pismute.github.io/d3js/06-drawing-with-data.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-6-drawing-with-data">d3js: chapter 6. drawing with data</h1>
