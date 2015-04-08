@@ -72,12 +72,12 @@
     <title><![CDATA[  ]]></title>
     <link href="https://pismute.github.io/'atom.xml'}}}" rel="self" />
     <link href="https://pismute.github.io/" />
-    <updated>2015-04-08T07:18:30.887Z</updated>
+    <updated>2015-04-08T07:56:49.938Z</updated>
     <id>https://pismute.github.io/</id>
     <entry>
     <title><![CDATA[ Better English ]]></title>
     <link herf="http://pismute.github.io/2015/better-english.html" />
-    <updated>2015-04-08T07:18:30.890Z</updated>
+    <updated>2015-04-08T07:56:49.941Z</updated>
     <id>http://pismute.github.io/2015/better-english.html</id>
     <content type="html"><![CDATA[
         <h1 id="better-english">Better English</h1>
@@ -177,7 +177,7 @@
 <p>Hunspell을 사용하면 사전을 추가로 설정해야 하는데 <a href="https://github.com/titoBouzout/Dictionaries">https://github.com/titoBouzout/Dictionaries</a> 에서 받을 수 있다. 여기서 사전을 내려받아서 <code>~/Library/Spelling</code>에 넣어 준다. <code>en_US.aff</code>, <code>en_US.dic</code>처럼 적당한 이름으로 바꿔서 넣는다.</p>
 <p>Homebrew로 설치한 Aspell은 왠지 사전을 요구하지 않아서 찾아보지 않았다.</p>
 <h2 id="-">유료</h2>
-<p>사서 쓰면 편하겠지. <del>금발 글래머</del>제시카 알바가 지적해줄지도 몰라.</p>
+<p>사서 쓰면 편하겠지. <del>금발 글래머가</del>제시카 알바가 그래머(Grammar)를 지적해줄지도 몰라.</p>
 <ul>
 <li><a href="http://www.hemingwayapp.com/">http://www.hemingwayapp.com/</a></li>
 </ul>
@@ -194,7 +194,7 @@
     <entry>
     <title><![CDATA[ dashbars ]]></title>
     <link herf="http://pismute.github.io/2015/dashbars.html" />
-    <updated>2015-04-08T07:18:30.892Z</updated>
+    <updated>2015-04-08T07:56:49.942Z</updated>
     <id>http://pismute.github.io/2015/dashbars.html</id>
     <content type="html"><![CDATA[
         <h1 id="dashbars">dashbars</h1>
@@ -273,7 +273,7 @@
     <entry>
     <title><![CDATA[ d3js: chapter 12. geomapping ]]></title>
     <link herf="http://pismute.github.io/d3js/12-geomapping.html" />
-    <updated>2015-04-08T07:18:30.892Z</updated>
+    <updated>2015-04-08T07:56:49.943Z</updated>
     <id>http://pismute.github.io/d3js/12-geomapping.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-12-geomapping">d3js: chapter 12. geomapping</h1>
@@ -772,7 +772,7 @@
     <entry>
     <title><![CDATA[ d3js: chapter 7. scale ]]></title>
     <link herf="http://pismute.github.io/d3js/07-scale.html" />
-    <updated>2015-04-08T07:18:30.893Z</updated>
+    <updated>2015-04-08T07:56:49.943Z</updated>
     <id>http://pismute.github.io/d3js/07-scale.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-7-scale">d3js: chapter 7. scale</h1>
@@ -1271,7 +1271,7 @@
     <entry>
     <title><![CDATA[ d3js: chapter 8. axis ]]></title>
     <link herf="http://pismute.github.io/d3js/08-axis.html" />
-    <updated>2015-04-08T07:18:30.893Z</updated>
+    <updated>2015-04-08T07:56:49.943Z</updated>
     <id>http://pismute.github.io/d3js/08-axis.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-8-axis">d3js: chapter 8. axis</h1>
@@ -1649,7 +1649,7 @@
     <entry>
     <title><![CDATA[ d3js: chapter 5. data ]]></title>
     <link herf="http://pismute.github.io/d3js/05-data.html" />
-    <updated>2015-04-08T07:18:30.894Z</updated>
+    <updated>2015-04-08T07:56:49.943Z</updated>
     <id>http://pismute.github.io/d3js/05-data.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-5-data">d3js: chapter 5. data</h1>
@@ -1810,7 +1810,7 @@ circle {
     <entry>
     <title><![CDATA[ d3js: chapter 6. drawing with data ]]></title>
     <link herf="http://pismute.github.io/d3js/06-drawing-with-data.html" />
-    <updated>2015-04-08T07:18:30.894Z</updated>
+    <updated>2015-04-08T07:56:49.944Z</updated>
     <id>http://pismute.github.io/d3js/06-drawing-with-data.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-6-drawing-with-data">d3js: chapter 6. drawing with data</h1>
