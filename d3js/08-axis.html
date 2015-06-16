@@ -13,29 +13,40 @@
     <meta name="author"
         content="Changwoo Park"></meta>
 
-    <link rel="shortcut icon" href="images/favicon.ico"></link>
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png"></link>
-    <link rel="apple-touch-icon" sizes="72x72"
-        href=" ='images/apple-touch-icon-72x72.png"></link>
-    <link rel="apple-touch-icon" sizes="114x114"
-        href="images/apple-touch-icon-114x114.png"></link>
+    <link rel="shortcut icon" href="/images/favicon.ico"></link>
     <link rel="alternate" type="application/atom+xml"
         title="d3js: chapter 8. axis &raquo; Feed"
         href="https://pismute.github.io/atom.xml"></link>
 
     <link rel="stylesheet" media="screen, projection"
-        href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"></link>
+        href="/bower_components/bootstrap/dist/css/bootstrap.min.css"></link>
     <link rel="stylesheet" media="screen, projection"
-        href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.2.2/css/material-wfont.css"></link>
+        href="/bower_components/bootstrap-material-design/dist/css/material.min.css"></link>
     <link rel="stylesheet" media="screen, projection"
-        href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.2.2/css/ripples.css"></link>
+        href="/bower_components/bootstrap-material-design/dist/css/ripples.min.css"></link>
     <link rel="stylesheet" media="screen, projection"
         href="/styles/style.css"></link>
+
+    <script src="/bower_components/requirejs/require.js"></script>
+    <script src="/scripts/require-config.js"></script>
+    <script async defer src="/scripts/script.js"></script>
+
+    <script async defer>
+
+    require(['$',
+             'bootstrap',
+             'bootstrap-material',
+             'bootstrap-material-ripples'],
+            function($){
+        $.material.init();
+    });
+
+
+
+    </script>
 </head>
 
 <body>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.5.0/lodash.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
@@ -74,20 +85,6 @@
 <link rel="stylesheet" media="screen, projection"
     href="/styles/markdown.css"></link>
 
-<script src="/babel.js"></script>
-<script>
-    function runLangJs(){
-        $(function(){ //defer
-            $('.lang-js').each(function(){
-                var script = document.createElement('script');
-                script.type = "text/babel";
-                $(script).text('(function(){\n' + $(this).text() + '\n})()');
-
-                $('#script-holder').append(script);
-            });
-        });
-    }
-</script>
 <section class="content">
     <article id="post" class="row post " typeof="sioc:post" about="/d3js/08-axis.html" lang="ko-kr">
         <div class="col-sm-2 small-font">
@@ -477,23 +474,33 @@
 </pre></div>
 
 </code></pre>
-<script>
-    runLangJs()
+
+
+<script async defer>
+
+require(['$', 'babel'], function($, babel){
+    $('.lang-js').each(function(){
+
+        babel.run('require(["$", "_", "d3"], function($, _, d3){' +
+                  $(this).text() + '});');
+
+    });
+});
+
 </script>
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 </div>
         </div>
     </article>
 
-    <span id="script-holder"></span>
 </section>
 
 <div id="fb-root"></div>
-<script src="//connect.facebook.net/en_US/all.js#xfbml=1"></script>
-<script src="//platform.twitter.com/widgets.js"></script>
-<script src="//apis.google.com/js/plusone.js"></script>
+<script async defer
+    src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>
+<script async defer
+    src="http://platform.twitter.com/widgets.js"></script>
+<script async defer
+    src="http://apis.google.com/js/plusone.js"></script>
 
         </div>
         <footer class="footer">
@@ -502,26 +509,5 @@
         </footer>
     </div>
 
-    <script
-        src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
-
-    <script
-        src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
-    <script
-        src="/scripts/script.js"></script>
-
-    <script
-        src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.2.2/js/ripples.min.js"></script>
-    <script
-        src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.2.2/js/material.min.js"></script>
-    <script>
-        $(function(){
-            $.material.init();
-        });
-    </script>
-
-    <script>
-
-    </script>
 </body>
 </html>
