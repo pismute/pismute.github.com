@@ -1,91 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf=8"></meta>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
-    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
-
-    <title></title>
-    <meta name="description"
-        content="P is mute"></meta>
-    <meta name="keywords"
-        content="Learning"></meta>
-    <meta name="author"
-        content="Changwoo Park"></meta>
-
-    <link rel="shortcut icon" href="/images/favicon.ico"></link>
-    <link rel="alternate" type="application/atom+xml"
-        title=" &raquo; Feed"
-        href="https://pismute.github.io/atom.xml"></link>
-
-    <link rel="stylesheet" media="screen, projection"
-        href="/bower_components/bootstrap/dist/css/bootstrap.min.css"></link>
-    <link rel="stylesheet" media="screen, projection"
-        href="/bower_components/bootstrap-material-design/dist/css/material.min.css"></link>
-    <link rel="stylesheet" media="screen, projection"
-        href="/bower_components/bootstrap-material-design/dist/css/ripples.min.css"></link>
-    <link rel="stylesheet" media="screen, projection"
-        href="/styles/style.css"></link>
-
-    <script src="/bower_components/requirejs/require.js"></script>
-    <script src="/scripts/require-config.js"></script>
-    <script async defer src="/scripts/script.js"></script>
-
-    <script async defer>
-
-    require(['$',
-             'bootstrap',
-             'bootstrap-material',
-             'bootstrap-material-ripples'],
-            function($){
-        $.material.init();
-    });
-
-
-
-    </script>
-</head>
-
-<body>
-
-    <nav class="navbar navbar-default navbar-static-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed"
-                    data-toggle="collapse" data-target="#navbar"
-                    aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/">@</a>
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="/site/archive.html">Archive</a></li>
-                    <li><a href="/site/keyword-map.html">Keyword Map</a></li>
-                </ul>
-                <form id="search-form" class="navbar-form navbar-right"
-                        action="http://google.com/search" method="get">
-                    <input type="hidden" name="q"
-                        value="site:pismute.github.io"></input>
-                    <input class="form-control" type="text"
-                        name="q" results="0" placeholder="Search..."></input>
-                </form>
-            </div><!--/.nav-collapse -->
-        </div>
-    </nav>
-    <div class="container">
-        <div>
-          <?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <urlset
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
     <url>
         <loc>https://pismute.github.io/</loc>
-        <lastmod>2015-06-16T16:00:12.250Z</lastmod>
+        <lastmod>2015-06-20T12:52:21.300Z</lastmod>
         <changefreq>weekly</changefreq>
     </url>
     <url>
@@ -128,14 +48,9 @@
         <lastmod>2015-01-25T00:00:00.000Z</lastmod>
         <changefreq>never</changefreq>
     </url>
+    <url>
+        <loc>http://pismute.github.io/2015/rest.html</loc>
+        <lastmod>2015-01-01T00:00:00.000Z</lastmod>
+        <changefreq>never</changefreq>
+    </url>
 </urlset>
-
-        </div>
-        <footer class="footer">
-            <p>Copyright &copy; 2015+ Changwoo Park</p>
-            <p><small>Powered by <a href="https://github.com/pismute/gulp-makdoc">makdoc</a>, <a href="http://fezvrasta.github.io/bootstrap-material-design/">bootstrap-material-design</a></small></p>
-        </footer>
-    </div>
-
-</body>
-</html>

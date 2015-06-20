@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf=8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+
+    <title>Rest</title>
+    <meta name="description"
+        content="https://github.com/for-GET/http-decision-diagram"></meta>
+    <meta name="keywords"
+        content="english"></meta>
+    <meta name="author"
+        content="Changwoo Park"></meta>
+
+    <link rel="shortcut icon" href="/images/favicon.ico"></link>
+    <link rel="alternate" type="application/atom+xml"
+        title="Rest &raquo; Feed"
+        href="https://pismute.github.io/atom.xml"></link>
+
+    <link rel="stylesheet" media="screen, projection"
+        href="/bower_components/bootstrap/dist/css/bootstrap.min.css"></link>
+    <link rel="stylesheet" media="screen, projection"
+        href="/bower_components/bootstrap-material-design/dist/css/material.min.css"></link>
+    <link rel="stylesheet" media="screen, projection"
+        href="/bower_components/bootstrap-material-design/dist/css/ripples.min.css"></link>
+    <link rel="stylesheet" media="screen, projection"
+        href="/styles/style.css"></link>
+
+    <script src="/bower_components/requirejs/require.js"></script>
+    <script src="/scripts/require-config.js"></script>
+    <script async defer src="/scripts/script.js"></script>
+
+    <script async defer>
+
+    require(['$',
+             'bootstrap',
+             'bootstrap-material',
+             'bootstrap-material-ripples'],
+            function($){
+        $.material.init();
+    });
+
+
+
+    </script>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed"
+                    data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">@</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/site/archive.html">Archive</a></li>
+                    <li><a href="/site/keyword-map.html">Keyword Map</a></li>
+                </ul>
+                <form id="search-form" class="navbar-form navbar-right"
+                        action="http://google.com/search" method="get">
+                    <input type="hidden" name="q"
+                        value="site:pismute.github.io"></input>
+                    <input class="form-control" type="text"
+                        name="q" results="0" placeholder="Search..."></input>
+                </form>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+    <div class="container">
+        <div>
+          <link rel="stylesheet" media="screen, projection"
+    href="/styles/github.css"></link>
+<link rel="stylesheet" media="screen, projection"
+    href="/styles/pygment-github.css"></link>
+<link rel="stylesheet" media="screen, projection"
+    href="/styles/markdown.css"></link>
+
+<section class="content">
+    <article id="post" class="row post " typeof="sioc:post" about="/2015/rest.html" lang="ko-kr">
+        <div class="col-sm-2 small-font">
+            <br /><br />
+            <p property="dc:created">2015 Jan 01</p>
+
+            <div id="social-buttons" class="top-line">
+              <ul class="unstyled">
+                <li><a class="twitter-share-button" href="https://twitter.com/share"
+                  data-url="https://pismute.github.io/2015/rest.html" data-via="pismute"
+                  data-count="horizontal" data-lang="en">tweet</a></li>
+                <li><div class="g-plusone" data-size="medium"
+                    data-href="https://pismute.github.io/2015/rest.html"></div></li>
+                <li><div class="fb-like"
+                  data-href="https://pismute.github.io/2015/rest.html" data-send="false"
+                  data-layout="button_count" data-show-faces="false"></div></li>
+              </ul>
+            </div>
+
+            <p class="small-font top-line"><a href="/site/keyword-map.html#english" class="keyword">english</a></p>
+        </div>
+
+        <div class="col-sm-10">
+            <div property="sioc:content"><h2 id="rest">Rest</h2>
+<ul>
+<li><a href="https://github.com/for-GET/http-decision-diagram">https://github.com/for-GET/http-decision-diagram</a></li>
+<li>SSL everywhere - all the time</li>
+<li>Good Documentation</li>
+</ul>
+<h2 id="url">URL</h2>
+<p>endpoint name should be plural</p>
+<ul>
+<li>GET /tickets - Retrieves a list of tickets</li>
+<li>GET /tickets/12 - Retrieves a specific ticket</li>
+<li>POST /tickets - Creates a new ticket</li>
+<li>PUT /tickets/12 - Updates ticket #12</li>
+<li>PATCH /tickets/12 - Partially updates ticket #12</li>
+<li>DELETE /tickets/12 - Deletes ticket #12</li>
+</ul>
+<h3 id="what-about-actions-that-don-t-fit-into-the-world-of-crud-operations-">What about actions that don’t fit into the world of CRUD operations?</h3>
+<p>This is where things can get fuzzy. There are a number of approaches:</p>
+<ul>
+<li>Restructure the action to appear like a field of a resource. This works if the action doesn’t take parameters. For example an activate action could be mapped to a boolean activated field and updated via a PATCH to the resource.</li>
+<li>Treat it like a sub-resource with RESTful principles. For example, GitHub’s API lets you star a gist with <code>PUT /gists/:id/star</code> and unstar with <code>DELETE /gists/:id/star</code>.</li>
+<li>Sometimes you really have no way to map the action to a sensible RESTful structure. For example, a multi-resource search doesn’t really make sense to be applied to a specific resource’s endpoint. In this case, /search would make the most sense even though it isn’t a resource. This is OK - just do what’s right from the perspective of the API consumer and make sure it’s documented clearly to avoid confusion.</li>
+</ul>
+<h3 id="result-filtering-sorting-searching">Result filtering, sorting &amp; searching</h3>
+<ul>
+<li>Filtering: <code>GET /tickets?q=state%3Dopen</code></li>
+<li>Sorting:<ul>
+<li><code>GET /tickets?sort=-priority</code>: Retrieves a list of tickets in descending order of priority</li>
+<li><code>GET /tickets?sort=-priority,created_at</code> - Retrieves a list of tickets in descending order of priority. Within a specific priority, older tickets are ordered first</li>
+</ul>
+</li>
+<li>Searching: <code>q</code> paramters</li>
+</ul>
+<h4 id="combining-these-together-">Combining these together.</h4>
+<ul>
+<li><code>GET /tickets?sort=-updated_at</code> - Retrieve recently updated tickets</li>
+<li><code>GET /tickets?q=state3Dclosed&amp;sort=-updated_at</code> - Retrieve recently closed tickets</li>
+<li><code>GET /tickets?q=state%3Dopen&amp;sort=-priority,created_at</code> - Retrieve the highest priority open tickets mentioning the word ‘return’</li>
+</ul>
+<h4 id="aliases-for-common-queries">Aliases for common queries</h4>
+<p>To make the API experience more pleasant for the average consumer, consider packaging up sets of conditions into easily accessible RESTful paths. For example, the recently closed tickets query above could be packaged up as <code>GET /tickets/recently_closed</code></p>
+<h4 id="limiting-which-fields-are-returned-by-the-api">Limiting which fields are returned by the API</h4>
+<ul>
+<li><code>GET /tickets?fields=id,subject,customer_name,updated_at</code></li>
+</ul>
+<h4 id="updates-creation-should-return-a-resource-representation">Updates &amp; creation should return a resource representation</h4>
+<ul>
+<li>PUT, POST or PATCH should return a resource.</li>
+<li>In case of a POST that resulted in a creation, use a HTTP 201 status code and include a <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30">Location header</a> that points to the URL of the new resource.</li>
+</ul>
+<h2 id="json">JSON</h2>
+<ul>
+<li>Pretty print by default &amp; ensure gzip is supported</li>
+<li>Don’t use an envelope by default, but make it possible when needed. Exception cases:<ul>
+<li><code>?envelope=ture</code></li>
+<li>when jsonp(and callback) paramter exists</li>
+<li>when HATEOAS enabled.</li>
+</ul>
+</li>
+<li>An API that accepts JSON encoded POST, PUT &amp; PATCH requests should also require the Content-Type header be set to application/json or throw a 415 Unsupported Media Type HTTP status code.</li>
+</ul>
+<h4 id="snake_case-is-20-easier-to-read-than-camelcase">snake_case is 20% easier to read than camelCase</h4>
+<p>Based on an <a href="http://ieeexplore.ieee.org/xpl/articleDetails.jsp?tp=&amp;arnumber=5521745">eye tracking study on camelCase and snake_case(PDF)</a> from 2010</p>
+<h4 id="format">format</h4>
+<h5 id="date-and-time">Date and Time</h5>
+<p>The HTTP spec already specifies using RFC 1123 date formats (currently being used in Date, If-Modified-Since &amp; Last-Modified HTTP headers). If we were to specify a new HTTP header that takes a timestamp of some sort, it should follow RFC 1123 conventions instead of using UNIX timestamps.</p>
+<pre><code><div class="highlight"><pre><span class="nx">Last</span><span class="o">-</span><span class="nx">Modified</span><span class="o">:</span> <span class="nx">Tue</span><span class="p">,</span> <span class="mi">15</span> <span class="nx">Nov</span> <span class="mi">1994</span> <span class="mi">12</span><span class="o">:</span><span class="mi">45</span><span class="o">:</span><span class="mi">26</span> <span class="nx">GMT</span>
+</pre></div>
+
+</code></pre><h2 id="paging">Paging</h2>
+<p>/record?offset=100&amp;limit=25</p>
+<ul>
+<li><a href="http://tools.ietf.org/html/rfc5988#page-6">http://tools.ietf.org/html/rfc5988#page-6</a></li>
+<li><a href="http://developer.github.com/v3/#pagination">http://developer.github.com/v3/#pagination</a></li>
+<li>count: <code>X-Total-Count: ${count}</code></li>
+</ul>
+<h2 id="auto-loading-related-resource-representations">Auto loading related resource representations</h2>
+<p>As this does go against some RESTful principles, we can minimize our deviation by only doing so based on an embed (or expand) query parameter.</p>
+<p><code>GET /tickets/12?embed=customer.name,assigned_user</code></p>
+<pre><code><div class="highlight"><pre><span class="p">{</span>
+  <span class="s2">&quot;id&quot;</span> <span class="o">:</span> <span class="mi">12</span><span class="p">,</span>
+  <span class="s2">&quot;subject&quot;</span> <span class="o">:</span> <span class="s2">&quot;I have a question!&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;summary&quot;</span> <span class="o">:</span> <span class="s2">&quot;Hi, ....&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;customer&quot;</span> <span class="o">:</span> <span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span> <span class="o">:</span> <span class="s2">&quot;Bob&quot;</span>
+  <span class="p">},</span>
+  <span class="nx">assigned_user</span><span class="o">:</span> <span class="p">{</span>
+   <span class="s2">&quot;id&quot;</span> <span class="o">:</span> <span class="mi">42</span><span class="p">,</span>
+   <span class="s2">&quot;name&quot;</span> <span class="o">:</span> <span class="s2">&quot;Jim&quot;</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+</code></pre><h2 id="rate-limiting">Rate limiting</h2>
+<p>To prevent abuse, it is standard practice to add some sort of rate limiting to an API. <a href="http://tools.ietf.org/html/rfc6585">RFC 6585</a> introduced a HTTP status code <a href="http://tools.ietf.org/html/rfc6585#section-4">429 Too Many Requests</a> to accommodate this.</p>
+<p>At a minimum, include the following headers (using <a href="https://dev.twitter.com/docs/rate-limiting/1.1">Twitter’s naming conventions</a> as headers typically don’t have mid-word capitalization):</p>
+<ul>
+<li>X-Rate-Limit-Limit - The number of allowed requests in the current period</li>
+<li>X-Rate-Limit-Remaining - The number of remaining requests in the current period</li>
+<li>X-Rate-Limit-Reset - The number of seconds left in the current period</li>
+</ul>
+<h2 id="authentication">Authentication</h2>
+<p>A RESTful API should be stateless. This means that request authentication should not depend on cookies or sessions. Instead, each request should come with some sort authentication credentials.</p>
+<ul>
+<li>Access token that is delivered in the user name field of HTTP Basic Auth</li>
+<li><p>An API that needs to support JSONP uses a special parameter access_token, <code>/tickets?access_tocken=${token}</code></p>
+</li>
+<li><p>Oauth2: <a href="http://blog.outsider.ne.kr/433">http://blog.outsider.ne.kr/433</a></p>
+</li>
+<li>JSON Web Token: <a href="http://bcho.tistory.com/999">http://bcho.tistory.com/999</a></li>
+</ul>
+<p>JSON Web Token 예제 만들어 보고 쓸것.</p>
+<h2 id="versioning">Versioning</h2>
+<ul>
+<li>URL has major version(v1): /api/v1/blahblah</li>
+<li>Header has date-based minor version: <code>X-Api-Version: 2015-06-09</code></li>
+</ul>
+<h2 id="caching">Caching</h2>
+<h3 id="etag-">ETag:</h3>
+<p>When generating a request, include a HTTP header ETag containing a hash or checksum of the representation. This value should change whenever the output representation changes. Now, if an inbound HTTP requests contains a If-None-Match header with a matching ETag value, the API should return a 304 Not Modified status code instead of the output representation of the resource.</p>
+<h3 id="last-modified">Last-Modified</h3>
+<p>This basically works like to ETag, except that it uses timestamps. The response header Last-Modified contains a timestamp in RFC 1123 format which is validated against If-Modified-Since. Not e that the HTTP spec has had 3 different acceptable date formats and the server should be prepared to accept any one of them.</p>
+<pre><code><div class="highlight"><pre><span class="nx">If</span><span class="o">-</span><span class="nx">Modified</span><span class="o">-</span><span class="nx">Since</span><span class="o">:</span> <span class="nx">Tue</span><span class="p">,</span> <span class="mi">15</span> <span class="nx">Nov</span> <span class="mi">1994</span> <span class="mi">12</span><span class="o">:</span><span class="mi">45</span><span class="o">:</span><span class="mi">26</span> <span class="nx">GMT</span>
+</pre></div>
+
+</code></pre><h2 id="errors">Errors</h2>
+<pre><code><div class="highlight"><pre><span class="p">{</span>
+  <span class="s2">&quot;code&quot;</span> <span class="o">:</span> <span class="mi">1234</span><span class="p">,</span>
+  <span class="s2">&quot;message&quot;</span> <span class="o">:</span> <span class="s2">&quot;Something bad happened :(&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;More details about the error here&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+</code></pre><p>Validation errors for PUT, PATCH and POST requests will need a field breakdown. This is best modeled by using a fixed top-level error code for validation failures and providing the detailed errors in an additional errors field, like so:</p>
+<pre><code><div class="highlight"><pre><span class="p">{</span>
+  <span class="s2">&quot;code&quot;</span> <span class="o">:</span> <span class="mi">1024</span><span class="p">,</span>
+  <span class="s2">&quot;message&quot;</span> <span class="o">:</span> <span class="s2">&quot;Validation Failed&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;errors&quot;</span> <span class="o">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;code&quot;</span> <span class="o">:</span> <span class="mi">5432</span><span class="p">,</span>
+      <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;first_name&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;message&quot;</span> <span class="o">:</span> <span class="s2">&quot;First name cannot have fancy characters&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+       <span class="s2">&quot;code&quot;</span> <span class="o">:</span> <span class="mi">5622</span><span class="p">,</span>
+       <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;password&quot;</span><span class="p">,</span>
+       <span class="s2">&quot;message&quot;</span> <span class="o">:</span> <span class="s2">&quot;Password cannot be blank&quot;</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+</code></pre><h2 id="http-status-codes">HTTP status codes</h2>
+<ul>
+<li><code>200 OK</code>: Response to a successful GET, PUT, PATCH or DELETE. Can also be used for a POST that doesn’t result in a creation.</li>
+<li><code>201 Created</code>: Response to a POST that results in a creation. Should be combined with a Location header pointing to the location of the new resource</li>
+<li><code>204 No Content</code>: Response to a successful request that won’t be returning a body (like a DELETE request)</li>
+<li><code>304 Not Modified</code>: Used when HTTP caching headers are in play</li>
+<li><code>400 Bad Request</code>: The request is malformed, such as if the body does not parse</li>
+<li><code>401 Unauthorized</code>: When no or invalid authentication details are provided. Also useful to trigger an auth popup if the API is used from a browser</li>
+<li><code>403 Forbidden</code>: When authentication succeeded but authenticated user doesn’t have access to the resource</li>
+<li><code>404 Not Found</code>: When a non-existent resource is requested</li>
+<li><code>405 Method Not Allowed</code>: When an HTTP method is being requested that isn’t allowed for the authenticated user</li>
+<li><code>410 Gone</code>: Indicates that the resource at this end point is no longer available. Useful as a blanket response for old API versions</li>
+<li><code>415 Unsupported Media Type</code>: If incorrect content type was provided as part of the request</li>
+<li><code>422 Unprocessable Entity</code>: Used for validation errors</li>
+<li><code>429 Too Many Requests</code>: When a request is rejected due to rate limiting</li>
+</ul>
+<h2 id="reference">Reference</h2>
+<ul>
+<li><a href="http://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api">http://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api</a></li>
+<li><a href="http://bcho.tistory.com/954">http://bcho.tistory.com/954</a></li>
+</ul>
+</div>
+        </div>
+    </article>
+
+</section>
+
+<div id="fb-root"></div>
+<script async defer
+    src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>
+<script async defer
+    src="http://platform.twitter.com/widgets.js"></script>
+<script async defer
+    src="http://apis.google.com/js/plusone.js"></script>
+
+        </div>
+        <footer class="footer">
+            <p>Copyright &copy; 2015+ Changwoo Park</p>
+            <p><small>Powered by <a href="https://github.com/pismute/gulp-makdoc">makdoc</a>, <a href="http://fezvrasta.github.io/bootstrap-material-design/">bootstrap-material-design</a></small></p>
+        </footer>
+    </div>
+
+</body>
+</html>
