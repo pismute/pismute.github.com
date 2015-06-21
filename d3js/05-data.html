@@ -13,10 +13,12 @@
     <meta name="author"
         content="Changwoo Park"></meta>
 
-    <link rel="shortcut icon" href="/images/favicon.ico"></link>
+    <link rel="home" type="text/html" href="https://pismute.github.io/" />
     <link rel="alternate" type="application/atom+xml"
         title="d3js: chapter 5. data &raquo; Feed"
         href="https://pismute.github.io/atom.xml"></link>
+
+    <link rel="shortcut icon" href="/images/favicon.ico"></link>
 
     <link rel="stylesheet" media="screen, projection"
         href="/bower_components/bootstrap/dist/css/bootstrap.min.css"></link>
@@ -27,23 +29,11 @@
     <link rel="stylesheet" media="screen, projection"
         href="/styles/style.css"></link>
 
-    <script src="/bower_components/requirejs/require.js"></script>
+    <script
+        src="/bower_components/requirejs/require.js"></script>
     <script src="/scripts/require-config.js"></script>
     <script async defer src="/scripts/script.js"></script>
 
-    <script async defer>
-
-    require(['$',
-             'bootstrap',
-             'bootstrap-material',
-             'bootstrap-material-ripples'],
-            function($){
-        $.material.init();
-    });
-
-
-
-    </script>
 </head>
 
 <body>
@@ -122,7 +112,7 @@ circle {
 
 <p id="phr-scatch"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">25</span><span class="p">];</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">25</span><span class="p">];</span>
 
 <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;#phr-scatch&#39;</span><span class="p">).</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dataset</span><span class="p">)</span>
@@ -137,7 +127,7 @@ circle {
 <p><code>selectAll(&quot;circle&quot;)</code>은 “circle” 엘리먼트랑 data랑 역는 행위:</p>
 <p id="phr-join"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">svg</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;#phr-join&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">)</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">svg</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;#phr-join&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">)</span>
         <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">720</span><span class="p">)</span>
         <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="mi">240</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>
@@ -215,7 +205,7 @@ circle {
 </pre></div>
 
 </code></pre>
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">];</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">];</span>
 
 <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;#phr-join-update&#39;</span><span class="p">).</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dataset</span><span class="p">)</span> <span class="c1">//return update selection</span>
@@ -242,7 +232,7 @@ circle {
 </pre></div>
 
 </code></pre>
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">];</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">];</span>
 
 <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;#phr-join-enter&#39;</span><span class="p">).</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dataset</span><span class="p">)</span> <span class="c1">//return update selection</span>
@@ -257,20 +247,6 @@ circle {
 </code></pre>
 <h4 id="transition">Transition</h4>
 <p>d3js 책 9장에서 배운다:</p>
-
-
-<script async defer>
-
-require(['$', 'babel'], function($, babel){
-    $('.lang-js').each(function(){
-
-        babel.run('require(["$", "_", "d3"], function($, _, d3){' +
-                  $(this).text() + '});');
-
-    });
-});
-
-</script>
 </div>
         </div>
     </article>

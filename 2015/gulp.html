@@ -9,14 +9,16 @@
     <meta name="description"
         content="Gulp 프로젝트 자체는 소스도 길지 않고 별거 없다. Vinyl이라는 가상 파일 시스템과 Orchestrator라는 타스크 엔진을 너무나도 잘 섞어 놓은 타스크 러너다."></meta>
     <meta name="keywords"
-        content="gulp"></meta>
+        content="Learning"></meta>
     <meta name="author"
         content="Changwoo Park"></meta>
 
-    <link rel="shortcut icon" href="/images/favicon.ico"></link>
+    <link rel="home" type="text/html" href="https://pismute.github.io/" />
     <link rel="alternate" type="application/atom+xml"
         title="Gulp 소개 &raquo; Feed"
         href="https://pismute.github.io/atom.xml"></link>
+
+    <link rel="shortcut icon" href="/images/favicon.ico"></link>
 
     <link rel="stylesheet" media="screen, projection"
         href="/bower_components/bootstrap/dist/css/bootstrap.min.css"></link>
@@ -27,23 +29,11 @@
     <link rel="stylesheet" media="screen, projection"
         href="/styles/style.css"></link>
 
-    <script src="/bower_components/requirejs/require.js"></script>
+    <script
+        src="/bower_components/requirejs/require.js"></script>
     <script src="/scripts/require-config.js"></script>
     <script async defer src="/scripts/script.js"></script>
 
-    <script async defer>
-
-    require(['$',
-             'bootstrap',
-             'bootstrap-material',
-             'bootstrap-material-ripples'],
-            function($){
-        $.material.init();
-    });
-
-
-
-    </script>
 </head>
 
 <body>
@@ -89,7 +79,7 @@
     <article id="post" class="row post " typeof="sioc:post" about="/2015/gulp.html" lang="ko-kr">
         <div class="col-sm-2 small-font">
             <br /><br />
-            <p property="dc:created">2015 Jun 05</p>
+            <p property="dc:created">2015 Jun 21</p>
 
             <div id="social-buttons" class="top-line">
               <ul class="unstyled">
@@ -104,7 +94,7 @@
               </ul>
             </div>
 
-            <p class="small-font top-line"><a href="/site/keyword-map.html#gulp" class="keyword">gulp</a></p>
+            <p class="small-font top-line"></p>
         </div>
 
         <div class="col-sm-10">
@@ -127,16 +117,17 @@
 <h2 id="-">타스크</h2>
 <p>비동기라는 점을 제외하면 Ant나 Make 같은 타스크 러너와 다를 게 없어 이해하기 쉽다.</p>
 <p>타스크는 아래와 같이 정의한다:</p>
-<pre><code><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;myTask&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;myTask&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
     <span class="c1">// do anything.</span>
 <span class="p">});</span>
 </pre></div>
 
-</code></pre><p>타스크를 만들고 달성해야 할 것을 달성하면 된다. 하지만, 이 타스크는 틀렸다. Gulp는 비동기라서 타스크가 끝났음을 반드시 Gulp에게 알려줘야 한다.</p>
+</code></pre>
+<p>타스크를 만들고 달성해야 할 것을 달성하면 된다. 하지만, 이 타스크는 틀렸다. Gulp는 비동기라서 타스크가 끝났음을 반드시 Gulp에게 알려줘야 한다.</p>
 <p>타스크 하나씩 테스트할 때는 잘 동작하기 때문에 빠트리기 쉽다. 끝남을 알려주지 않으면 다음 타스크를 실행하지 않고 그냥 멈춰버린다. Gulp는 타스크가 실행 중이라고 생각해서 다음 타스크로 연결하지 않는다.</p>
 <p>타스크가 끝났음을 알리는 방법은 세 가지다. 아래 예제는 gulp 문서에서 가져왔다:</p>
 <h4 id="callback">Callback</h4>
-<pre><code><div class="highlight"><pre><span class="c1">// run a command in a shell</span>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="c1">// run a command in a shell</span>
 <span class="kd">var</span> <span class="nx">exec</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">).</span><span class="nx">exec</span><span class="p">;</span>
 <span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;jekyll&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// build Jekyll</span>
@@ -147,8 +138,9 @@
 <span class="p">});</span>
 </pre></div>
 
-</code></pre><h4 id="return-a-stream">Return a stream</h4>
-<pre><code><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;somename&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</code></pre>
+<h4 id="return-a-stream">Return a stream</h4>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;somename&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">stream</span> <span class="o">=</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;client/**/*.js&#39;</span><span class="p">)</span>
         <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">minify</span><span class="p">())</span>
         <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;build&#39;</span><span class="p">));</span>
@@ -156,8 +148,9 @@
 <span class="p">});</span>
 </pre></div>
 
-</code></pre><h4 id="return-a-promise">Return a promise</h4>
-<pre><code><div class="highlight"><pre><span class="kd">var</span> <span class="nx">Q</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">);</span>
+</code></pre>
+<h4 id="return-a-promise">Return a promise</h4>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">Q</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">);</span>
 
 <span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;somename&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">deferred</span> <span class="o">=</span> <span class="nx">Q</span><span class="p">.</span><span class="nx">defer</span><span class="p">();</span>
@@ -171,7 +164,8 @@
 <span class="p">});</span>
 </pre></div>
 
-</code></pre><p>나는 보통은 Callback이 간단해서 더 좋다.</p>
+</code></pre>
+<p>나는 보통은 Callback이 간단해서 더 좋다.</p>
 <h3 id="orchestrator-">Orchestrator 타스크 러너</h3>
 <p>타스크 실행과 관리는 Orchestrator 프로젝트에 의존하는데 아 몰랑 넘어갈래.</p>
 <h2 id="-">스트림</h2>
@@ -186,7 +180,7 @@
 <li>Buffer: 메모리 버퍼</li>
 </ul>
 <p>Gulp는 이 Vinyl파일을 Transform하는 Transformer를 죽죽 연결하는 방식으로 사용한다:</p>
-<pre><code><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;mytask&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;mytask&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
     <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;path/to/**.js&#39;</span><span class="p">)</span>
         <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">using</span><span class="p">())</span>
         <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">through</span><span class="p">.</span><span class="nx">obj</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="nx">enc</span><span class="p">,</span> <span class="nx">done</span><span class="p">){</span>
@@ -197,10 +191,11 @@
 <span class="p">});</span>
 </pre></div>
 
-</code></pre><p><code>gulp.src()</code>에서 만들어진 Vinyl 파일을 하나씩 처리한다.</p>
+</code></pre>
+<p><code>gulp.src()</code>에서 만들어진 Vinyl 파일을 하나씩 처리한다.</p>
 <h3 id="gulp-">Gulp 플러그인</h3>
 <p>플러그인은 아래와 같이 만들고 사용한다:</p>
-<pre><code><div class="highlight"><pre><span class="c1">// 만들기</span>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="c1">// 만들기</span>
 <span class="kd">var</span> <span class="nx">through</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;through2&#39;</span><span class="p">);</span> <span class="c1">//이하 생략</span>
 
 <span class="kd">var</span> <span class="nx">myPlugin</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
@@ -213,8 +208,9 @@
     <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">myPlugin</span><span class="p">())</span>
 </pre></div>
 
-</code></pre><p>실제 플러그인은 아래처럼 만든다:</p>
-<pre><code><div class="highlight"><pre><span class="kd">var</span> <span class="nx">plugin</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</code></pre>
+<p>실제 플러그인은 아래처럼 만든다:</p>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">plugin</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">through</span><span class="p">.</span><span class="nx">obj</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="nx">enc</span><span class="p">,</span> <span class="nx">done</span><span class="p">){</span>
         <span class="k">if</span> <span class="p">(</span><span class="nx">file</span><span class="p">.</span><span class="nx">isNull</span><span class="p">())</span> <span class="p">{</span>
             <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">file</span><span class="p">);</span>
@@ -233,13 +229,14 @@
 <span class="p">};</span>
 </pre></div>
 
-</code></pre><h2 id="-">테스트</h2>
+</code></pre>
+<h2 id="-">테스트</h2>
 <p>사실 아직 테스트를 잘 작성하지 않아서 연구를 많이 못 했다. 하지만, 고민하던 것을 정리해본다.</p>
 <p>먼저 리팩토링해서 Side-effect가 없는 코드를 함수로 분리해서 Mocking 없이 테스트할 수 있게 한다. Gulp는 타스크 러너고 알고리즘이나 이런 거 짤 일은 없다. Side-effect가 많으면 Mocking이 필요하고 시간이 많이 든다. Side-effect가 없는 코드를 별도 함수로 분리해서 쉽게 테스트를 할 수 있기 쉽게 하고 어려운 것은 틈틈이 하는 게 좋겠다. 어려워도 바라면 길은 있다. 우주가 돕는다.</p>
 <p>Gulp에서 직접 작성하는 코드는 크게 타스크와 플러그인으로 나눌 수 있다. 각각 다른 트릭이 필요할 텐데 아직은 잘 모른다.</p>
 <h3 id="-">타스크 테스트</h3>
 <p>타스크를 테스트하는 방법은 아직 모른다. 테스트를 짠 적 없다. 함수로 분리해서 테스트해도 돼서 우회 책도 있다. 그래도 굳이 해야 한다면 현재는 아래처럼 하겠다.</p>
-<pre><code><div class="highlight"><pre><span class="kd">var</span> <span class="nx">myTask</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">myTask</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
     <span class="nx">done</span><span class="p">();</span>
 <span class="p">}</span>
 
@@ -250,7 +247,8 @@
 <span class="p">}</span>
 </pre></div>
 
-</code></pre><p>이렇게 작성하고 myTask 함수를 테스트한다. Gulp에 타스크 함수를 가져오는 API가 있을 것도 같지만, 아직 찾아보지 않았다.</p>
+</code></pre>
+<p>이렇게 작성하고 myTask 함수를 테스트한다. Gulp에 타스크 함수를 가져오는 API가 있을 것도 같지만, 아직 찾아보지 않았다.</p>
 <h3 id="-">플러그인 테스트</h3>
 <p>플러그인을 테스트하는 방법은 Gulp에서 매우 잘 설명한다.</p>
 <ul>
@@ -263,7 +261,7 @@
 <h4 id="-gulp-load-plugin-"><a href="https://github.com/jackfranklin/gulp-load-plugins">gulp-load-plugin</a></h4>
 <p>플러그인을 하나하나 require로 로딩하지 않아도 되기 때문에 편리하다.</p>
 <p>어떤 것을 로딩할지는 <code>package.json</code>의 의존성을 보고 결정한다. 예를 들어 <code>gulp-using</code> 플러그인이 <code>package.json</code>에 정의돼 있으면 <code>$.using()</code>을 사용할 수 있다.</p>
-<pre><code><div class="highlight"><pre><span class="kd">var</span> <span class="nx">$</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./gulp-load-plugins&#39;</span><span class="p">)</span>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">$</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./gulp-load-plugins&#39;</span><span class="p">)</span>
 
 <span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;mytask&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
     <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;path/to/**.js&#39;</span><span class="p">)</span>
@@ -274,9 +272,10 @@
 <span class="p">});</span>
 </pre></div>
 
-</code></pre><h4 id="-run-sequence-"><a href="https://github.com/OverZealous/run-sequence">run-sequence</a></h4>
+</code></pre>
+<h4 id="-run-sequence-"><a href="https://github.com/OverZealous/run-sequence">run-sequence</a></h4>
 <p>타스크를 차례대로 실행하거나 병렬로 실행할 수 있다. Gulp에는 타스크를 줄 세우는 기능이 약하기 때문에 유용하다.</p>
-<pre><code><div class="highlight"><pre><span class="kd">var</span> <span class="nx">seq</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;run-sequence&#39;</span><span class="p">);</span>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">seq</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;run-sequence&#39;</span><span class="p">);</span>
 <span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;myTask&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
     <span class="nx">seq</span><span class="p">(</span><span class="s1">&#39;init&#39;</span><span class="p">,</span>
         <span class="p">[</span><span class="s1">&#39;clean&#39;</span><span class="p">,</span> <span class="s1">&#39;clear&#39;</span><span class="p">],</span> <span class="c1">//parallels</span>
@@ -284,7 +283,8 @@
 <span class="p">});</span>
 </pre></div>
 
-</code></pre><p>이 예제는 아래와 같다:</p>
+</code></pre>
+<p>이 예제는 아래와 같다:</p>
 <ol>
 <li>init 타스크를 실행</li>
 <li>clean, clear를 병렬로 실행.</li>
@@ -292,7 +292,7 @@
 </ol>
 <h4 id="-gulp-cached-"><a href="https://github.com/wearefractal/gulp-cached">gulp-cached</a></h4>
 <p>watch 타스크를 사용할 때 필수다. 처리한 파일을 메모리에 저장해뒀다가, 다음에 다시 시도하면 변경한 파일만 통과시킨다.</p>
-<pre><code><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;myTask&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;myTask&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
     <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;path/to/**&#39;</span><span class="p">)</span>
         <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">cached</span><span class="p">(</span><span class="s1">&#39;myTask&#39;</span><span class="p">))</span> <span class="c1">//cache 이름</span>
         <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">using</span><span class="p">())</span> <span class="c1">//변경한 파일만 출력된다.</span>
@@ -310,13 +310,14 @@
 <span class="p">});</span>
 </pre></div>
 
-</code></pre><p>이렇게 정의하고 실행하면 ‘myTask’, ‘watch’ 순으로 실행한다. ‘myTask’를 실행할 때 <code>$.cached()</code>를 통과하는 파일은 모두 캐시한다.</p>
+</code></pre>
+<p>이렇게 정의하고 실행하면 ‘myTask’, ‘watch’ 순으로 실행한다. ‘myTask’를 실행할 때 <code>$.cached()</code>를 통과하는 파일은 모두 캐시한다.</p>
 <p>그러고 나서 Gulp가 watch하고 있는 파일 중 하나가 실행하면 ‘myTask’가 다시 실행된다.</p>
 <p>‘myTask’ 타스크는 변경된 파일에 대해서만 선택적으로 처리하는 것이 아니라 ‘path/to/**’로 스캔하는 파일을 전부 다시 처리한다.</p>
 <p>그래서 <code>$.cached()</code> 플러그인으로 변경된 파일만 처리하도록 필터링하는 것이 필요하다.</p>
 <h4 id="-gulp-connect-"><a href="https://github.com/AveVlad/gulp-connect">gulp-connect</a></h4>
 <p>Livereload를 위해서 필요하다:</p>
-<pre><code><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;server&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;server&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
     <span class="nx">$</span><span class="p">.</span><span class="nx">connect</span><span class="p">.</span><span class="nx">server</span><span class="p">({</span>
         <span class="nx">livereload</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
         <span class="nx">root</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;path/to/root&#39;</span><span class="p">],</span>
@@ -327,15 +328,17 @@
 <span class="p">});</span>
 </pre></div>
 
-</code></pre><p>이렇게 서버를 띄우고 Livereload를 할 타스크에 플러그인을 추가한다:</p>
-<pre><code><div class="highlight"><pre>        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;scripts/&#39;</span><span class="p">))</span>
+</code></pre>
+<p>이렇게 서버를 띄우고 Livereload를 할 타스크에 플러그인을 추가한다:</p>
+<pre><code class="lang-js"><div class="highlight"><pre>        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;scripts/&#39;</span><span class="p">))</span>
         <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">connect</span><span class="p">.</span><span class="nx">reload</span><span class="p">());</span>
 </pre></div>
 
-</code></pre><p>이 플러그인은 <code>watch</code> 타스크를 함께 쓸 때 빛난다. 어떤 파일이 변경되면 <code>gulp-cached</code> 플러그인으로 그 파일만 선택해서 <code>gulp-connect</code> 플러그인으로 Reload 시킨다.</p>
+</code></pre>
+<p>이 플러그인은 <code>watch</code> 타스크를 함께 쓸 때 빛난다. 어떤 파일이 변경되면 <code>gulp-cached</code> 플러그인으로 그 파일만 선택해서 <code>gulp-connect</code> 플러그인으로 Reload 시킨다.</p>
 <h4 id="-gulp-filter-"><a href="https://github.com/sindresorhus/gulp-filter">gulp-filter</a></h4>
 <p>이 플러그인은 if 문이라고 생각하면 쉽다. 말로 설명하면 에너지가 분산되니 바로 소스를 보자.</p>
-<pre><code><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;styles&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;styles&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">lessFilter</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="s1">&#39;**/*.less&#39;</span><span class="p">);</span>
     <span class="kd">var</span> <span class="nx">scssFilter</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="s1">&#39;**/*.scss&#39;</span><span class="p">);</span>
 
@@ -359,12 +362,13 @@
 <span class="p">});</span>
 </pre></div>
 
-</code></pre><p>scss 파일을 컴파일하는 것과 less 파일을 컴파일하는 것은 <code>gulp-filter</code> 플러그인을 이용해서 각각 하고 컴파일한 css 파일은 공통으로 처리한다.</p>
+</code></pre>
+<p>scss 파일을 컴파일하는 것과 less 파일을 컴파일하는 것은 <code>gulp-filter</code> 플러그인을 이용해서 각각 하고 컴파일한 css 파일은 공통으로 처리한다.</p>
 <h4 id="-gulp-cache-"><a href="https://github.com/jgable/gulp-cache">gulp-cache</a></h4>
 <p><code>gulp-cache</code>는 <code>gulp-cached</code>와 다른 플러그인이다. <code>gulp-cache</code>는 오래 걸리는 작업은 처음에 캐시하고 재사용하는 데 사용한다.</p>
 <p>이미지를 압축하는 일은 한번 압축하면 다시 압축할 필요가 없다. 개발할 때 엄청 여러 번 gulp를 실행한다. 오래 걸리는 이미지 압축은 변경될 때 한 번만 실행하면 좋을 것이다. 한번 압축한 것을 저장해 뒀다가 재사용하면 매번 시간을 줄일 수 있다.</p>
 <p>이미지 최적화는 <code>gulp-imagemin</code>을 사용한다:</p>
-<pre><code><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;images&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;images&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;path/to/image&#39;</span><span class="p">)</span>
         <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">cached</span><span class="p">(</span><span class="s1">&#39;images&#39;</span><span class="p">))</span>
         <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">using</span><span class="p">())</span>
@@ -379,7 +383,8 @@
 <span class="p">});</span>
 </pre></div>
 
-</code></pre><h2 id="-">참고</h2>
+</code></pre>
+<h2 id="-">참고</h2>
 <ul>
 <li><a href="https://github.com/gulpjs/gulp/blob/master/docs/API.md">https://github.com/gulpjs/gulp/blob/master/docs/API.md</a></li>
 <li>각 플러그인 문서.</li>

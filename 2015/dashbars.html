@@ -9,14 +9,16 @@
     <meta name="description"
         content="Handlebarsjs용 헬퍼 라이브러리. dash.el, s.el, f.el, handlebars-helpers을 참고해서 만들었다."></meta>
     <meta name="keywords"
-        content="dashbar,toys"></meta>
+        content="Learning"></meta>
     <meta name="author"
         content="Changwoo Park"></meta>
 
-    <link rel="shortcut icon" href="/images/favicon.ico"></link>
+    <link rel="home" type="text/html" href="https://pismute.github.io/" />
     <link rel="alternate" type="application/atom+xml"
         title="dashbars &raquo; Feed"
         href="https://pismute.github.io/atom.xml"></link>
+
+    <link rel="shortcut icon" href="/images/favicon.ico"></link>
 
     <link rel="stylesheet" media="screen, projection"
         href="/bower_components/bootstrap/dist/css/bootstrap.min.css"></link>
@@ -27,23 +29,11 @@
     <link rel="stylesheet" media="screen, projection"
         href="/styles/style.css"></link>
 
-    <script src="/bower_components/requirejs/require.js"></script>
+    <script
+        src="/bower_components/requirejs/require.js"></script>
     <script src="/scripts/require-config.js"></script>
     <script async defer src="/scripts/script.js"></script>
 
-    <script async defer>
-
-    require(['$',
-             'bootstrap',
-             'bootstrap-material',
-             'bootstrap-material-ripples'],
-            function($){
-        $.material.init();
-    });
-
-
-
-    </script>
 </head>
 
 <body>
@@ -89,7 +79,7 @@
     <article id="post" class="row post " typeof="sioc:post" about="/2015/dashbars.html" lang="ko-kr">
         <div class="col-sm-2 small-font">
             <br /><br />
-            <p property="dc:created">2015 Apr 02</p>
+            <p property="dc:created">2015 Jun 21</p>
 
             <div id="social-buttons" class="top-line">
               <ul class="unstyled">
@@ -104,7 +94,7 @@
               </ul>
             </div>
 
-            <p class="small-font top-line"><a href="/site/keyword-map.html#dashbar" class="keyword">dashbar</a> <a href="/site/keyword-map.html#toys" class="keyword">toys</a></p>
+            <p class="small-font top-line"></p>
         </div>
 
         <div class="col-sm-10">
@@ -140,23 +130,25 @@
 <p>되도록 JavaScript의 기본 API를 사용했고 없으면 <code>lodash</code>를 사용했다. 이렇게 성능은 브라우저와 lodash에게 묻어 간다. ㅎㅎ</p>
 <h3 id="-">함수</h3>
 <p><a href="http://handlebarsjs.com/">Handlebarsjs</a>에서는 함수를 정의할 수 없기 때문에 따로 헬퍼 함수를 정의하고 함수 이름을 사용하도록 했다. 아래와 같이 헬퍼를 정의하면:</p>
-<pre><code><div class="highlight"><pre><span class="nx">Handlebars</span><span class="p">.</span><span class="nx">registerHelper</span><span class="p">(</span><span class="s1">&#39;-as-is&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">o</span><span class="p">){</span>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="nx">Handlebars</span><span class="p">.</span><span class="nx">registerHelper</span><span class="p">(</span><span class="s1">&#39;-as-is&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">o</span><span class="p">){</span>
     <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
 <span class="p">});</span>
 </pre></div>
 
-</code></pre><p><code>-map</code> 헬퍼에 <code>-as-is</code>라는 헬퍼를 넘긴다.</p>
+</code></pre>
+<p><code>-map</code> 헬퍼에 <code>-as-is</code>라는 헬퍼를 넘긴다.</p>
 <pre><code><div class="highlight"><pre><span class="p">{{</span><span class="o">-</span><span class="nx">map</span> <span class="s1">&#39;-as-is&#39;</span> <span class="p">(</span><span class="o">-</span><span class="nx">range</span> <span class="mi">0</span> <span class="mi">5</span><span class="p">)}}</span> <span class="c1">// [0,1,2,3,4]</span>
 </pre></div>
 
 </code></pre><h3 id="-">좀 더 함수형으로</h3>
 <p>아규먼트로 받은 리스트나 객체를 그대로 리턴하지 않는다. 리턴하는 객체는 항상 새로운 객체다. <code>-sort</code> 헬퍼의 예를 들면 아래처럼 아규먼트로 받은 리스트를 복사해서(slice) 정렬한다(sort).</p>
-<pre><code><div class="highlight"><pre><span class="nx">registerHelpers</span><span class="p">(</span><span class="s1">&#39;-sort&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">list</span><span class="p">,</span> <span class="nx">compare</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="nx">registerHelpers</span><span class="p">(</span><span class="s1">&#39;-sort&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">list</span><span class="p">,</span> <span class="nx">compare</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">list</span><span class="p">.</span><span class="nx">slice</span><span class="p">().</span><span class="nx">sort</span><span class="p">(</span><span class="nx">compare</span><span class="p">);</span>
 <span class="p">});</span>
 </pre></div>
 
-</code></pre><p>Javascript에서 대부분의 Array 함수들은 새로운 Array를 반환하는데 특이하게도 sort는 새 Array를 반환하지 않는다.</p>
+</code></pre>
+<p>Javascript에서 대부분의 Array 함수들은 새로운 Array를 반환하는데 특이하게도 sort는 새 Array를 반환하지 않는다.</p>
 <h3 id="-">블럭 헬퍼가 없다.</h3>
 <p><a href="https://github.com/pismute/dashbars">dashbars</a>에는 블럭 헬퍼가 없다. 이미 <a href="http://handlebarsjs.com/">Handlebarsjs</a>에 들어 있는 블럭 헬퍼로도 충분하다고 생각한다:</p>
 <pre><code><div class="highlight"><pre><span class="p">{{</span><span class="err">#</span><span class="nx">each</span> <span class="p">(</span><span class="o">-</span><span class="nx">take</span> <span class="mi">5</span> <span class="p">(</span><span class="o">-</span><span class="nx">drop</span> <span class="mi">3</span> <span class="p">(</span><span class="o">-</span><span class="nx">range</span> <span class="mi">0</span> <span class="mi">10</span><span class="p">)))}}</span> <span class="c1">// [3,4,5,6,7]</span>

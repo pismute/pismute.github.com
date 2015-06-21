@@ -3,297 +3,12 @@
     <title><![CDATA[  ]]></title>
     <link href="https://pismute.github.io/'atom.xml'}}}" rel="self" />
     <link href="https://pismute.github.io/" />
-    <updated>2015-06-20T12:52:21.259Z</updated>
+    <updated>2015-06-21T11:17:56.476Z</updated>
     <id>https://pismute.github.io/</id>
-    <entry>
-    <title><![CDATA[ Gulp 소개 ]]></title>
-    <link herf="http://pismute.github.io/2015/gulp.html" />
-    <updated>2015-06-20T12:52:21.262Z</updated>
-    <id>http://pismute.github.io/2015/gulp.html</id>
-    <content type="html"><![CDATA[
-        <h1 id="gulp-">Gulp 소개</h1>
-<blockquote>
-<p>Gulp 프로젝트 자체는 소스도 길지 않고 별거 없다. Vinyl이라는 가상 파일 시스템과 Orchestrator라는 타스크 엔진을 너무나도 잘 섞어 놓은 타스크 러너다.</p>
-</blockquote>
-<p>Grunt에서 처음 넘어왔을 때는 너무 어색했다. 소스를 까봤을 때의 충격이란…</p>
-<p><img src="./gulp.png" alt=""></p>
-<p>(from <a href="http://jhalaldrut.blogspot.kr/2012/09/gulp.html">http://jhalaldrut.blogspot.kr/2012/09/gulp.html</a>)</p>
-<p>Gulp 자체는 별거 없고 여러 프로젝트로 자잘하게 쪼개져 있다. 그래서 원하는 기능이 구현된 소스를 찾는 일은 술래잡기의 재미(?)와 메멘토적 경험(?)을 선사해 준다.</p>
-<p>주관적인 견해로 Grunt보다 나은 점은 아래와 같다:</p>
-<ul>
-<li>빠르다: 매개체로 파일이 아니라 메모리를 사용한다.</li>
-<li>항상 비동기다: 동기를 선택할 수 없어서 더 단순한 것 같다.</li>
-<li>코드가 짧다.</li>
-</ul>
-<p>사실 굳이 Gulp를 사용할 필요가 없다. 응!?</p>
-<p>Gulp의 뼈대는 비동기 타스크와 스트림이다.</p>
-<h2 id="-">타스크</h2>
-<p>비동기라는 점을 제외하면 Ant나 Make 같은 타스크 러너와 다를 게 없어 이해하기 쉽다.</p>
-<p>타스크는 아래와 같이 정의한다:</p>
-<pre><code><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;myTask&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
-    <span class="c1">// do anything.</span>
-<span class="p">});</span>
-</pre></div>
-
-</code></pre><p>타스크를 만들고 달성해야 할 것을 달성하면 된다. 하지만, 이 타스크는 틀렸다. Gulp는 비동기라서 타스크가 끝났음을 반드시 Gulp에게 알려줘야 한다.</p>
-<p>타스크 하나씩 테스트할 때는 잘 동작하기 때문에 빠트리기 쉽다. 끝남을 알려주지 않으면 다음 타스크를 실행하지 않고 그냥 멈춰버린다. Gulp는 타스크가 실행 중이라고 생각해서 다음 타스크로 연결하지 않는다.</p>
-<p>타스크가 끝났음을 알리는 방법은 세 가지다. 아래 예제는 gulp 문서에서 가져왔다:</p>
-<h4 id="callback">Callback</h4>
-<pre><code><div class="highlight"><pre><span class="c1">// run a command in a shell</span>
-<span class="kd">var</span> <span class="nx">exec</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">).</span><span class="nx">exec</span><span class="p">;</span>
-<span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;jekyll&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
-  <span class="c1">// build Jekyll</span>
-  <span class="nx">exec</span><span class="p">(</span><span class="s1">&#39;jekyll build&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="k">return</span> <span class="nx">cb</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span> <span class="c1">// return error</span>
-    <span class="nx">cb</span><span class="p">();</span> <span class="c1">// finished task</span>
-  <span class="p">});</span>
-<span class="p">});</span>
-</pre></div>
-
-</code></pre><h4 id="return-a-stream">Return a stream</h4>
-<pre><code><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;somename&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">stream</span> <span class="o">=</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;client/**/*.js&#39;</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">minify</span><span class="p">())</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;build&#39;</span><span class="p">));</span>
-    <span class="k">return</span> <span class="nx">stream</span><span class="p">;</span>
-<span class="p">});</span>
-</pre></div>
-
-</code></pre><h4 id="return-a-promise">Return a promise</h4>
-<pre><code><div class="highlight"><pre><span class="kd">var</span> <span class="nx">Q</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">);</span>
-
-<span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;somename&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">deferred</span> <span class="o">=</span> <span class="nx">Q</span><span class="p">.</span><span class="nx">defer</span><span class="p">();</span>
-
-    <span class="c1">// do async stuff</span>
-    <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-        <span class="nx">deferred</span><span class="p">.</span><span class="nx">resolve</span><span class="p">();</span>
-    <span class="p">},</span> <span class="mi">1</span><span class="p">);</span>
-
-    <span class="k">return</span> <span class="nx">deferred</span><span class="p">.</span><span class="nx">promise</span><span class="p">;</span>
-<span class="p">});</span>
-</pre></div>
-
-</code></pre><p>나는 보통은 Callback이 간단해서 더 좋다.</p>
-<h3 id="orchestrator-">Orchestrator 타스크 러너</h3>
-<p>타스크 실행과 관리는 Orchestrator 프로젝트에 의존하는데 아 몰랑 넘어갈래.</p>
-<h2 id="-">스트림</h2>
-<p>스트림은 Blob 패턴에 따라 스캔한 Vinyl 파일을 Transformer로 한 단계 한 단계씩 처리하는 스트림이다. 유닉스 파이프와 유사하다. 유닉스 파이프로 표현하자면 `gulp.src(‘path/to/**.js’) | Transformer1 | Transformer2 | …’ 이렇게 표현할 수 있다.</p>
-<p>그리고 Gulp 플러그인은 이 Transformer다. Grunt에서는 플러그인이 타스크였기 때문에 처음에는 조금 헷갈렸다. 물론 플러그인에 타스크를 정의하고 여러 프로젝트에서 타스크를 공유하는 꼼수를 찾아냈다. 이 글의 범위와 벗어나는데다 꼼수이므로 소개하지 않겠다.</p>
-<p>Vinyl 파일부터 Gulp 플러그인을 정의하는 것까지 달성해보자.</p>
-<h3 id="vinyl-">Vinyl 파일</h3>
-<p>Vinyl 파일은 가상 파일로 일종의 컨테이너다. 세 가지 중 하나를 포함한다.</p>
-<ul>
-<li>Empty: 아무것도 포함하지 않음.</li>
-<li>Stream: 스트림</li>
-<li>Buffer: 메모리 버퍼</li>
-</ul>
-<p>Gulp는 이 Vinyl파일을 Transform하는 Transformer를 죽죽 연결하는 방식으로 사용한다:</p>
-<pre><code><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;mytask&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
-    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;path/to/**.js&#39;</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">using</span><span class="p">())</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">through</span><span class="p">.</span><span class="nx">obj</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="nx">enc</span><span class="p">,</span> <span class="nx">done</span><span class="p">){</span>
-            <span class="c1">//file이 Vinyl 파일이다.</span>
-        <span class="p">}))</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="nx">makdoc</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">DIST</span><span class="p">()))</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">size</span><span class="p">());</span>
-<span class="p">});</span>
-</pre></div>
-
-</code></pre><p><code>gulp.src()</code>에서 만들어진 Vinyl 파일을 하나씩 처리한다.</p>
-<h3 id="gulp-">Gulp 플러그인</h3>
-<p>플러그인은 아래와 같이 만들고 사용한다:</p>
-<pre><code><div class="highlight"><pre><span class="c1">// 만들기</span>
-<span class="kd">var</span> <span class="nx">through</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;through2&#39;</span><span class="p">);</span> <span class="c1">//이하 생략</span>
-
-<span class="kd">var</span> <span class="nx">myPlugin</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
-    <span class="k">return</span> <span class="nx">through</span><span class="p">.</span><span class="nx">obj</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="nx">enc</span><span class="p">,</span> <span class="nx">done</span><span class="p">){</span>
-        <span class="c1">//my plugin</span>
-    <span class="p">})</span>
-<span class="p">}</span>
-
-<span class="c1">// 사용하기</span>
-    <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">myPlugin</span><span class="p">())</span>
-</pre></div>
-
-</code></pre><p>실제 플러그인은 아래처럼 만든다:</p>
-<pre><code><div class="highlight"><pre><span class="kd">var</span> <span class="nx">plugin</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">through</span><span class="p">.</span><span class="nx">obj</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="nx">enc</span><span class="p">,</span> <span class="nx">done</span><span class="p">){</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">file</span><span class="p">.</span><span class="nx">isNull</span><span class="p">())</span> <span class="p">{</span>
-            <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">file</span><span class="p">);</span>
-        <span class="p">}</span>
-
-        <span class="k">if</span> <span class="p">(</span><span class="nx">file</span><span class="p">.</span><span class="nx">isStream</span><span class="p">())</span> <span class="p">{</span>
-            <span class="k">this</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nx">gulpUtil</span><span class="p">.</span><span class="nx">PluginError</span><span class="p">(</span><span class="nx">_PLUGIN_NAME</span><span class="p">,</span>
-                <span class="s1">&#39;Streaming not supported&#39;</span><span class="p">));</span>
-            <span class="k">return</span> <span class="nx">done</span><span class="p">();</span>
-        <span class="p">}</span>
-
-        <span class="c1">// transform file.</span>
-
-        <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">file</span><span class="p">);</span>
-    <span class="p">});</span>
-<span class="p">};</span>
-</pre></div>
-
-</code></pre><h2 id="-">테스트</h2>
-<p>사실 아직 테스트를 잘 작성하지 않아서 연구를 많이 못 했다. 하지만, 고민하던 것을 정리해본다.</p>
-<p>먼저 리팩토링해서 Side-effect가 없는 코드를 함수로 분리해서 Mocking 없이 테스트할 수 있게 한다. Gulp는 타스크 러너고 알고리즘이나 이런 거 짤 일은 없다. Side-effect가 많으면 Mocking이 필요하고 시간이 많이 든다. Side-effect가 없는 코드를 별도 함수로 분리해서 쉽게 테스트를 할 수 있기 쉽게 하고 어려운 것은 틈틈이 하는 게 좋겠다. 어려워도 바라면 길은 있다. 우주가 돕는다.</p>
-<p>Gulp에서 직접 작성하는 코드는 크게 타스크와 플러그인으로 나눌 수 있다. 각각 다른 트릭이 필요할 텐데 아직은 잘 모른다.</p>
-<h3 id="-">타스크 테스트</h3>
-<p>타스크를 테스트하는 방법은 아직 모른다. 테스트를 짠 적 없다. 함수로 분리해서 테스트해도 돼서 우회 책도 있다. 그래도 굳이 해야 한다면 현재는 아래처럼 하겠다.</p>
-<pre><code><div class="highlight"><pre><span class="kd">var</span> <span class="nx">myTask</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
-    <span class="nx">done</span><span class="p">();</span>
-<span class="p">}</span>
-
-<span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;myTask&#39;</span><span class="p">,</span> <span class="nx">myTask</span><span class="p">);</span>
-
-<span class="kr">export</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="nx">myTask</span><span class="o">:</span> <span class="nx">myTask</span>
-<span class="p">}</span>
-</pre></div>
-
-</code></pre><p>이렇게 작성하고 myTask 함수를 테스트한다. Gulp에 타스크 함수를 가져오는 API가 있을 것도 같지만, 아직 찾아보지 않았다.</p>
-<h3 id="-">플러그인 테스트</h3>
-<p>플러그인을 테스트하는 방법은 Gulp에서 매우 잘 설명한다.</p>
-<ul>
-<li><a href="https://github.com/gulpjs/gulp/blob/master/docs/writing-a-plugin/testing.md">https://github.com/gulpjs/gulp/blob/master/docs/writing-a-plugin/testing.md</a></li>
-</ul>
-<p>테스트는 언젠가 별도로 정리해야겠다.</p>
-<h2 id="-">플러그인 소개</h2>
-<p>유용한 플러그인을 몇 개 소개한다.</p>
-<p>이 플러그인들을 적용한 코드는 <a href="https://github.com/pismute/gulp-makdoc/blob/master/lib/tasks.js">https://github.com/pismute/gulp-makdoc/blob/master/lib/tasks.js</a> 에 있다.</p>
-<h4 id="-gulp-load-plugin-"><a href="https://github.com/jackfranklin/gulp-load-plugins">gulp-load-plugin</a></h4>
-<p>플러그인을 하나하나 require로 로딩하지 않아도 되기 때문에 편리하다.</p>
-<p>어떤 것을 로딩할지는 <code>package.json</code>의 의존성을 보고 결정한다. 예를 들어 <code>gulp-using</code> 플러그인이 <code>package.json</code>에 정의돼 있으면 <code>$.using()</code>을 사용할 수 있다.</p>
-<pre><code><div class="highlight"><pre><span class="kd">var</span> <span class="nx">$</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./gulp-load-plugins&#39;</span><span class="p">)</span>
-
-<span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;mytask&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
-    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;path/to/**.js&#39;</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">through</span><span class="p">.</span><span class="nx">obj</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="nx">enc</span><span class="p">,</span> <span class="nx">done</span><span class="p">){</span>
-            <span class="c1">//file이 Vinyl 파일이다.</span>
-        <span class="p">}))</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;path/to/scripts&#39;</span><span class="p">))</span>
-<span class="p">});</span>
-</pre></div>
-
-</code></pre><h4 id="-run-sequence-"><a href="https://github.com/OverZealous/run-sequence">run-sequence</a></h4>
-<p>타스크를 차례대로 실행하거나 병렬로 실행할 수 있다. Gulp에는 타스크를 줄 세우는 기능이 약하기 때문에 유용하다.</p>
-<pre><code><div class="highlight"><pre><span class="kd">var</span> <span class="nx">seq</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;run-sequence&#39;</span><span class="p">);</span>
-<span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;myTask&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
-    <span class="nx">seq</span><span class="p">(</span><span class="s1">&#39;init&#39;</span><span class="p">,</span>
-        <span class="p">[</span><span class="s1">&#39;clean&#39;</span><span class="p">,</span> <span class="s1">&#39;clear&#39;</span><span class="p">],</span> <span class="c1">//parallels</span>
-        <span class="nx">done</span><span class="p">);</span>
-<span class="p">});</span>
-</pre></div>
-
-</code></pre><p>이 예제는 아래와 같다:</p>
-<ol>
-<li>init 타스크를 실행</li>
-<li>clean, clear를 병렬로 실행.</li>
-<li>done을 호출해서 myTask를 끝냄.</li>
-</ol>
-<h4 id="-gulp-cached-"><a href="https://github.com/wearefractal/gulp-cached">gulp-cached</a></h4>
-<p>watch 타스크를 사용할 때 필수다. 처리한 파일을 메모리에 저장해뒀다가, 다음에 다시 시도하면 변경한 파일만 통과시킨다.</p>
-<pre><code><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;myTask&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
-    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;path/to/**&#39;</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">cached</span><span class="p">(</span><span class="s1">&#39;myTask&#39;</span><span class="p">))</span> <span class="c1">//cache 이름</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">using</span><span class="p">())</span> <span class="c1">//변경한 파일만 출력된다.</span>
-<span class="p">});</span>
-
-<span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;watch&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
-    <span class="c1">//파일이 하나만 변경돼도 myTask를 통째로 실행</span>
-    <span class="nx">gulp</span><span class="p">.</span><span class="nx">watch</span><span class="p">(</span><span class="s1">&#39;path/to/**&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;myTask&#39;</span><span class="p">]);</span>
-
-    <span class="nx">done</span><span class="p">();</span>
-<span class="p">});</span>
-
-<span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
-    <span class="nx">seq</span><span class="p">(</span><span class="s1">&#39;myTask&#39;</span><span class="p">,</span> <span class="s1">&#39;watch&#39;</span><span class="p">,</span> <span class="nx">done</span><span class="p">);</span>
-<span class="p">});</span>
-</pre></div>
-
-</code></pre><p>이렇게 정의하고 실행하면 ‘myTask’, ‘watch’ 순으로 실행한다. ‘myTask’를 실행할 때 <code>$.cached()</code>를 통과하는 파일은 모두 캐시한다.</p>
-<p>그러고 나서 Gulp가 watch하고 있는 파일 중 하나가 실행하면 ‘myTask’가 다시 실행된다.</p>
-<p>‘myTask’ 타스크는 변경된 파일에 대해서만 선택적으로 처리하는 것이 아니라 ‘path/to/**’로 스캔하는 파일을 전부 다시 처리한다.</p>
-<p>그래서 <code>$.cached()</code> 플러그인으로 변경된 파일만 처리하도록 필터링하는 것이 필요하다.</p>
-<h4 id="-gulp-connect-"><a href="https://github.com/AveVlad/gulp-connect">gulp-connect</a></h4>
-<p>Livereload를 위해서 필요하다:</p>
-<pre><code><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;server&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
-    <span class="nx">$</span><span class="p">.</span><span class="nx">connect</span><span class="p">.</span><span class="nx">server</span><span class="p">({</span>
-        <span class="nx">livereload</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-        <span class="nx">root</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;path/to/root&#39;</span><span class="p">],</span>
-        <span class="nx">port</span><span class="o">:</span> <span class="mi">9000</span>
-    <span class="p">});</span>
-
-    <span class="nx">done</span><span class="p">();</span>
-<span class="p">});</span>
-</pre></div>
-
-</code></pre><p>이렇게 서버를 띄우고 Livereload를 할 타스크에 플러그인을 추가한다:</p>
-<pre><code><div class="highlight"><pre>        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;scripts/&#39;</span><span class="p">))</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">connect</span><span class="p">.</span><span class="nx">reload</span><span class="p">());</span>
-</pre></div>
-
-</code></pre><p>이 플러그인은 <code>watch</code> 타스크를 함께 쓸 때 빛난다. 어떤 파일이 변경되면 <code>gulp-cached</code> 플러그인으로 그 파일만 선택해서 <code>gulp-connect</code> 플러그인으로 Reload 시킨다.</p>
-<h4 id="-gulp-filter-"><a href="https://github.com/sindresorhus/gulp-filter">gulp-filter</a></h4>
-<p>이 플러그인은 if 문이라고 생각하면 쉽다. 말로 설명하면 에너지가 분산되니 바로 소스를 보자.</p>
-<pre><code><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;styles&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">lessFilter</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="s1">&#39;**/*.less&#39;</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">scssFilter</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="s1">&#39;**/*.scss&#39;</span><span class="p">);</span>
-
-    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;path/to/**/*.{css,less,scss}&#39;</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">cached</span><span class="p">(</span><span class="s1">&#39;styles&#39;</span><span class="p">))</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">using</span><span class="p">())</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">lessFilter</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">less</span><span class="p">({</span>
-            <span class="nx">strictMath</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-            <span class="nx">strictUnits</span><span class="o">:</span> <span class="kc">true</span>
-        <span class="p">}))</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">lessFilter</span><span class="p">.</span><span class="nx">restore</span><span class="p">())</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">scssFilter</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">sass</span><span class="p">({</span> <span class="nx">style</span><span class="o">:</span> <span class="s1">&#39;expanded&#39;</span> <span class="p">}))</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">scssFilter</span><span class="p">.</span><span class="nx">restore</span><span class="p">())</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">autoprefixer</span><span class="p">(</span><span class="s1">&#39;last 2 version&#39;</span><span class="p">))</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">minifycss</span><span class="p">())</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">rename</span><span class="p">({</span> <span class="nx">suffix</span><span class="o">:</span> <span class="s1">&#39;.min&#39;</span> <span class="p">}))</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;path/to/styles/&#39;</span><span class="p">))</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">connect</span><span class="p">.</span><span class="nx">reload</span><span class="p">());</span>
-<span class="p">});</span>
-</pre></div>
-
-</code></pre><p>scss 파일을 컴파일하는 것과 less 파일을 컴파일하는 것은 <code>gulp-filter</code> 플러그인을 이용해서 각각 하고 컴파일한 css 파일은 공통으로 처리한다.</p>
-<h4 id="-gulp-cache-"><a href="https://github.com/jgable/gulp-cache">gulp-cache</a></h4>
-<p><code>gulp-cache</code>는 <code>gulp-cached</code>와 다른 플러그인이다. <code>gulp-cache</code>는 오래 걸리는 작업은 처음에 캐시하고 재사용하는 데 사용한다.</p>
-<p>이미지를 압축하는 일은 한번 압축하면 다시 압축할 필요가 없다. 개발할 때 엄청 여러 번 gulp를 실행한다. 오래 걸리는 이미지 압축은 변경될 때 한 번만 실행하면 좋을 것이다. 한번 압축한 것을 저장해 뒀다가 재사용하면 매번 시간을 줄일 수 있다.</p>
-<p>이미지 최적화는 <code>gulp-imagemin</code>을 사용한다:</p>
-<pre><code><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;images&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;path/to/image&#39;</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">cached</span><span class="p">(</span><span class="s1">&#39;images&#39;</span><span class="p">))</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">using</span><span class="p">())</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">cache</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">imagemin</span><span class="p">({</span>
-            <span class="nx">optimizationLevel</span><span class="o">:</span> <span class="mi">3</span><span class="p">,</span>
-            <span class="nx">progressive</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-            <span class="nx">interlaced</span><span class="o">:</span> <span class="kc">true</span>
-        <span class="p">})))</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;path/to/image&#39;</span><span class="p">))</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">size</span><span class="p">())</span>
-        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">connect</span><span class="p">.</span><span class="nx">reload</span><span class="p">());</span>
-<span class="p">});</span>
-</pre></div>
-
-</code></pre><h2 id="-">참고</h2>
-<ul>
-<li><a href="https://github.com/gulpjs/gulp/blob/master/docs/API.md">https://github.com/gulpjs/gulp/blob/master/docs/API.md</a></li>
-<li>각 플러그인 문서.</li>
-</ul>
-
-    ]]></content>
-    </entry>
     <entry>
     <title><![CDATA[ Better English ]]></title>
     <link herf="http://pismute.github.io/2015/better-english.html" />
-    <updated>2015-06-20T12:52:21.263Z</updated>
+    <updated>2015-06-21T11:17:56.480Z</updated>
     <id>http://pismute.github.io/2015/better-english.html</id>
     <content type="html"><![CDATA[
         <h1 id="better-english">Better English</h1>
@@ -410,7 +125,7 @@
     <entry>
     <title><![CDATA[ dashbars ]]></title>
     <link herf="http://pismute.github.io/2015/dashbars.html" />
-    <updated>2015-06-20T12:52:21.263Z</updated>
+    <updated>2015-06-21T11:17:56.482Z</updated>
     <id>http://pismute.github.io/2015/dashbars.html</id>
     <content type="html"><![CDATA[
         <h1 id="dashbars">dashbars</h1>
@@ -445,23 +160,25 @@
 <p>되도록 JavaScript의 기본 API를 사용했고 없으면 <code>lodash</code>를 사용했다. 이렇게 성능은 브라우저와 lodash에게 묻어 간다. ㅎㅎ</p>
 <h3 id="-">함수</h3>
 <p><a href="http://handlebarsjs.com/">Handlebarsjs</a>에서는 함수를 정의할 수 없기 때문에 따로 헬퍼 함수를 정의하고 함수 이름을 사용하도록 했다. 아래와 같이 헬퍼를 정의하면:</p>
-<pre><code><div class="highlight"><pre><span class="nx">Handlebars</span><span class="p">.</span><span class="nx">registerHelper</span><span class="p">(</span><span class="s1">&#39;-as-is&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">o</span><span class="p">){</span>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="nx">Handlebars</span><span class="p">.</span><span class="nx">registerHelper</span><span class="p">(</span><span class="s1">&#39;-as-is&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">o</span><span class="p">){</span>
     <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
 <span class="p">});</span>
 </pre></div>
 
-</code></pre><p><code>-map</code> 헬퍼에 <code>-as-is</code>라는 헬퍼를 넘긴다.</p>
+</code></pre>
+<p><code>-map</code> 헬퍼에 <code>-as-is</code>라는 헬퍼를 넘긴다.</p>
 <pre><code><div class="highlight"><pre><span class="p">{{</span><span class="o">-</span><span class="nx">map</span> <span class="s1">&#39;-as-is&#39;</span> <span class="p">(</span><span class="o">-</span><span class="nx">range</span> <span class="mi">0</span> <span class="mi">5</span><span class="p">)}}</span> <span class="c1">// [0,1,2,3,4]</span>
 </pre></div>
 
 </code></pre><h3 id="-">좀 더 함수형으로</h3>
 <p>아규먼트로 받은 리스트나 객체를 그대로 리턴하지 않는다. 리턴하는 객체는 항상 새로운 객체다. <code>-sort</code> 헬퍼의 예를 들면 아래처럼 아규먼트로 받은 리스트를 복사해서(slice) 정렬한다(sort).</p>
-<pre><code><div class="highlight"><pre><span class="nx">registerHelpers</span><span class="p">(</span><span class="s1">&#39;-sort&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">list</span><span class="p">,</span> <span class="nx">compare</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="nx">registerHelpers</span><span class="p">(</span><span class="s1">&#39;-sort&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">list</span><span class="p">,</span> <span class="nx">compare</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">list</span><span class="p">.</span><span class="nx">slice</span><span class="p">().</span><span class="nx">sort</span><span class="p">(</span><span class="nx">compare</span><span class="p">);</span>
 <span class="p">});</span>
 </pre></div>
 
-</code></pre><p>Javascript에서 대부분의 Array 함수들은 새로운 Array를 반환하는데 특이하게도 sort는 새 Array를 반환하지 않는다.</p>
+</code></pre>
+<p>Javascript에서 대부분의 Array 함수들은 새로운 Array를 반환하는데 특이하게도 sort는 새 Array를 반환하지 않는다.</p>
 <h3 id="-">블럭 헬퍼가 없다.</h3>
 <p><a href="https://github.com/pismute/dashbars">dashbars</a>에는 블럭 헬퍼가 없다. 이미 <a href="http://handlebarsjs.com/">Handlebarsjs</a>에 들어 있는 블럭 헬퍼로도 충분하다고 생각한다:</p>
 <pre><code><div class="highlight"><pre><span class="p">{{</span><span class="err">#</span><span class="nx">each</span> <span class="p">(</span><span class="o">-</span><span class="nx">take</span> <span class="mi">5</span> <span class="p">(</span><span class="o">-</span><span class="nx">drop</span> <span class="mi">3</span> <span class="p">(</span><span class="o">-</span><span class="nx">range</span> <span class="mi">0</span> <span class="mi">10</span><span class="p">)))}}</span> <span class="c1">// [3,4,5,6,7]</span>
@@ -487,9 +204,309 @@
     ]]></content>
     </entry>
     <entry>
+    <title><![CDATA[ Gulp 소개 ]]></title>
+    <link herf="http://pismute.github.io/2015/gulp.html" />
+    <updated>2015-06-21T11:17:56.482Z</updated>
+    <id>http://pismute.github.io/2015/gulp.html</id>
+    <content type="html"><![CDATA[
+        <h1 id="gulp-">Gulp 소개</h1>
+<blockquote>
+<p>Gulp 프로젝트 자체는 소스도 길지 않고 별거 없다. Vinyl이라는 가상 파일 시스템과 Orchestrator라는 타스크 엔진을 너무나도 잘 섞어 놓은 타스크 러너다.</p>
+</blockquote>
+<p>Grunt에서 처음 넘어왔을 때는 너무 어색했다. 소스를 까봤을 때의 충격이란…</p>
+<p><img src="./gulp.png" alt=""></p>
+<p>(from <a href="http://jhalaldrut.blogspot.kr/2012/09/gulp.html">http://jhalaldrut.blogspot.kr/2012/09/gulp.html</a>)</p>
+<p>Gulp 자체는 별거 없고 여러 프로젝트로 자잘하게 쪼개져 있다. 그래서 원하는 기능이 구현된 소스를 찾는 일은 술래잡기의 재미(?)와 메멘토적 경험(?)을 선사해 준다.</p>
+<p>주관적인 견해로 Grunt보다 나은 점은 아래와 같다:</p>
+<ul>
+<li>빠르다: 매개체로 파일이 아니라 메모리를 사용한다.</li>
+<li>항상 비동기다: 동기를 선택할 수 없어서 더 단순한 것 같다.</li>
+<li>코드가 짧다.</li>
+</ul>
+<p>사실 굳이 Gulp를 사용할 필요가 없다. 응!?</p>
+<p>Gulp의 뼈대는 비동기 타스크와 스트림이다.</p>
+<h2 id="-">타스크</h2>
+<p>비동기라는 점을 제외하면 Ant나 Make 같은 타스크 러너와 다를 게 없어 이해하기 쉽다.</p>
+<p>타스크는 아래와 같이 정의한다:</p>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;myTask&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="c1">// do anything.</span>
+<span class="p">});</span>
+</pre></div>
+
+</code></pre>
+<p>타스크를 만들고 달성해야 할 것을 달성하면 된다. 하지만, 이 타스크는 틀렸다. Gulp는 비동기라서 타스크가 끝났음을 반드시 Gulp에게 알려줘야 한다.</p>
+<p>타스크 하나씩 테스트할 때는 잘 동작하기 때문에 빠트리기 쉽다. 끝남을 알려주지 않으면 다음 타스크를 실행하지 않고 그냥 멈춰버린다. Gulp는 타스크가 실행 중이라고 생각해서 다음 타스크로 연결하지 않는다.</p>
+<p>타스크가 끝났음을 알리는 방법은 세 가지다. 아래 예제는 gulp 문서에서 가져왔다:</p>
+<h4 id="callback">Callback</h4>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="c1">// run a command in a shell</span>
+<span class="kd">var</span> <span class="nx">exec</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">).</span><span class="nx">exec</span><span class="p">;</span>
+<span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;jekyll&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// build Jekyll</span>
+  <span class="nx">exec</span><span class="p">(</span><span class="s1">&#39;jekyll build&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="k">return</span> <span class="nx">cb</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span> <span class="c1">// return error</span>
+    <span class="nx">cb</span><span class="p">();</span> <span class="c1">// finished task</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+
+</code></pre>
+<h4 id="return-a-stream">Return a stream</h4>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;somename&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">stream</span> <span class="o">=</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;client/**/*.js&#39;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">minify</span><span class="p">())</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;build&#39;</span><span class="p">));</span>
+    <span class="k">return</span> <span class="nx">stream</span><span class="p">;</span>
+<span class="p">});</span>
+</pre></div>
+
+</code></pre>
+<h4 id="return-a-promise">Return a promise</h4>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">Q</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">);</span>
+
+<span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;somename&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">deferred</span> <span class="o">=</span> <span class="nx">Q</span><span class="p">.</span><span class="nx">defer</span><span class="p">();</span>
+
+    <span class="c1">// do async stuff</span>
+    <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">deferred</span><span class="p">.</span><span class="nx">resolve</span><span class="p">();</span>
+    <span class="p">},</span> <span class="mi">1</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">deferred</span><span class="p">.</span><span class="nx">promise</span><span class="p">;</span>
+<span class="p">});</span>
+</pre></div>
+
+</code></pre>
+<p>나는 보통은 Callback이 간단해서 더 좋다.</p>
+<h3 id="orchestrator-">Orchestrator 타스크 러너</h3>
+<p>타스크 실행과 관리는 Orchestrator 프로젝트에 의존하는데 아 몰랑 넘어갈래.</p>
+<h2 id="-">스트림</h2>
+<p>스트림은 Blob 패턴에 따라 스캔한 Vinyl 파일을 Transformer로 한 단계 한 단계씩 처리하는 스트림이다. 유닉스 파이프와 유사하다. 유닉스 파이프로 표현하자면 `gulp.src(‘path/to/**.js’) | Transformer1 | Transformer2 | …’ 이렇게 표현할 수 있다.</p>
+<p>그리고 Gulp 플러그인은 이 Transformer다. Grunt에서는 플러그인이 타스크였기 때문에 처음에는 조금 헷갈렸다. 물론 플러그인에 타스크를 정의하고 여러 프로젝트에서 타스크를 공유하는 꼼수를 찾아냈다. 이 글의 범위와 벗어나는데다 꼼수이므로 소개하지 않겠다.</p>
+<p>Vinyl 파일부터 Gulp 플러그인을 정의하는 것까지 달성해보자.</p>
+<h3 id="vinyl-">Vinyl 파일</h3>
+<p>Vinyl 파일은 가상 파일로 일종의 컨테이너다. 세 가지 중 하나를 포함한다.</p>
+<ul>
+<li>Empty: 아무것도 포함하지 않음.</li>
+<li>Stream: 스트림</li>
+<li>Buffer: 메모리 버퍼</li>
+</ul>
+<p>Gulp는 이 Vinyl파일을 Transform하는 Transformer를 죽죽 연결하는 방식으로 사용한다:</p>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;mytask&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;path/to/**.js&#39;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">using</span><span class="p">())</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">through</span><span class="p">.</span><span class="nx">obj</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="nx">enc</span><span class="p">,</span> <span class="nx">done</span><span class="p">){</span>
+            <span class="c1">//file이 Vinyl 파일이다.</span>
+        <span class="p">}))</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="nx">makdoc</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">DIST</span><span class="p">()))</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">size</span><span class="p">());</span>
+<span class="p">});</span>
+</pre></div>
+
+</code></pre>
+<p><code>gulp.src()</code>에서 만들어진 Vinyl 파일을 하나씩 처리한다.</p>
+<h3 id="gulp-">Gulp 플러그인</h3>
+<p>플러그인은 아래와 같이 만들고 사용한다:</p>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="c1">// 만들기</span>
+<span class="kd">var</span> <span class="nx">through</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;through2&#39;</span><span class="p">);</span> <span class="c1">//이하 생략</span>
+
+<span class="kd">var</span> <span class="nx">myPlugin</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="nx">through</span><span class="p">.</span><span class="nx">obj</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="nx">enc</span><span class="p">,</span> <span class="nx">done</span><span class="p">){</span>
+        <span class="c1">//my plugin</span>
+    <span class="p">})</span>
+<span class="p">}</span>
+
+<span class="c1">// 사용하기</span>
+    <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">myPlugin</span><span class="p">())</span>
+</pre></div>
+
+</code></pre>
+<p>실제 플러그인은 아래처럼 만든다:</p>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">plugin</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">through</span><span class="p">.</span><span class="nx">obj</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="nx">enc</span><span class="p">,</span> <span class="nx">done</span><span class="p">){</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">file</span><span class="p">.</span><span class="nx">isNull</span><span class="p">())</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">file</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nx">file</span><span class="p">.</span><span class="nx">isStream</span><span class="p">())</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nx">gulpUtil</span><span class="p">.</span><span class="nx">PluginError</span><span class="p">(</span><span class="nx">_PLUGIN_NAME</span><span class="p">,</span>
+                <span class="s1">&#39;Streaming not supported&#39;</span><span class="p">));</span>
+            <span class="k">return</span> <span class="nx">done</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="c1">// transform file.</span>
+
+        <span class="nx">done</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">file</span><span class="p">);</span>
+    <span class="p">});</span>
+<span class="p">};</span>
+</pre></div>
+
+</code></pre>
+<h2 id="-">테스트</h2>
+<p>사실 아직 테스트를 잘 작성하지 않아서 연구를 많이 못 했다. 하지만, 고민하던 것을 정리해본다.</p>
+<p>먼저 리팩토링해서 Side-effect가 없는 코드를 함수로 분리해서 Mocking 없이 테스트할 수 있게 한다. Gulp는 타스크 러너고 알고리즘이나 이런 거 짤 일은 없다. Side-effect가 많으면 Mocking이 필요하고 시간이 많이 든다. Side-effect가 없는 코드를 별도 함수로 분리해서 쉽게 테스트를 할 수 있기 쉽게 하고 어려운 것은 틈틈이 하는 게 좋겠다. 어려워도 바라면 길은 있다. 우주가 돕는다.</p>
+<p>Gulp에서 직접 작성하는 코드는 크게 타스크와 플러그인으로 나눌 수 있다. 각각 다른 트릭이 필요할 텐데 아직은 잘 모른다.</p>
+<h3 id="-">타스크 테스트</h3>
+<p>타스크를 테스트하는 방법은 아직 모른다. 테스트를 짠 적 없다. 함수로 분리해서 테스트해도 돼서 우회 책도 있다. 그래도 굳이 해야 한다면 현재는 아래처럼 하겠다.</p>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">myTask</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
+    <span class="nx">done</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;myTask&#39;</span><span class="p">,</span> <span class="nx">myTask</span><span class="p">);</span>
+
+<span class="kr">export</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">myTask</span><span class="o">:</span> <span class="nx">myTask</span>
+<span class="p">}</span>
+</pre></div>
+
+</code></pre>
+<p>이렇게 작성하고 myTask 함수를 테스트한다. Gulp에 타스크 함수를 가져오는 API가 있을 것도 같지만, 아직 찾아보지 않았다.</p>
+<h3 id="-">플러그인 테스트</h3>
+<p>플러그인을 테스트하는 방법은 Gulp에서 매우 잘 설명한다.</p>
+<ul>
+<li><a href="https://github.com/gulpjs/gulp/blob/master/docs/writing-a-plugin/testing.md">https://github.com/gulpjs/gulp/blob/master/docs/writing-a-plugin/testing.md</a></li>
+</ul>
+<p>테스트는 언젠가 별도로 정리해야겠다.</p>
+<h2 id="-">플러그인 소개</h2>
+<p>유용한 플러그인을 몇 개 소개한다.</p>
+<p>이 플러그인들을 적용한 코드는 <a href="https://github.com/pismute/gulp-makdoc/blob/master/lib/tasks.js">https://github.com/pismute/gulp-makdoc/blob/master/lib/tasks.js</a> 에 있다.</p>
+<h4 id="-gulp-load-plugin-"><a href="https://github.com/jackfranklin/gulp-load-plugins">gulp-load-plugin</a></h4>
+<p>플러그인을 하나하나 require로 로딩하지 않아도 되기 때문에 편리하다.</p>
+<p>어떤 것을 로딩할지는 <code>package.json</code>의 의존성을 보고 결정한다. 예를 들어 <code>gulp-using</code> 플러그인이 <code>package.json</code>에 정의돼 있으면 <code>$.using()</code>을 사용할 수 있다.</p>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">$</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./gulp-load-plugins&#39;</span><span class="p">)</span>
+
+<span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;mytask&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;path/to/**.js&#39;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">through</span><span class="p">.</span><span class="nx">obj</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="nx">enc</span><span class="p">,</span> <span class="nx">done</span><span class="p">){</span>
+            <span class="c1">//file이 Vinyl 파일이다.</span>
+        <span class="p">}))</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;path/to/scripts&#39;</span><span class="p">))</span>
+<span class="p">});</span>
+</pre></div>
+
+</code></pre>
+<h4 id="-run-sequence-"><a href="https://github.com/OverZealous/run-sequence">run-sequence</a></h4>
+<p>타스크를 차례대로 실행하거나 병렬로 실행할 수 있다. Gulp에는 타스크를 줄 세우는 기능이 약하기 때문에 유용하다.</p>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">seq</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;run-sequence&#39;</span><span class="p">);</span>
+<span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;myTask&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
+    <span class="nx">seq</span><span class="p">(</span><span class="s1">&#39;init&#39;</span><span class="p">,</span>
+        <span class="p">[</span><span class="s1">&#39;clean&#39;</span><span class="p">,</span> <span class="s1">&#39;clear&#39;</span><span class="p">],</span> <span class="c1">//parallels</span>
+        <span class="nx">done</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+</code></pre>
+<p>이 예제는 아래와 같다:</p>
+<ol>
+<li>init 타스크를 실행</li>
+<li>clean, clear를 병렬로 실행.</li>
+<li>done을 호출해서 myTask를 끝냄.</li>
+</ol>
+<h4 id="-gulp-cached-"><a href="https://github.com/wearefractal/gulp-cached">gulp-cached</a></h4>
+<p>watch 타스크를 사용할 때 필수다. 처리한 파일을 메모리에 저장해뒀다가, 다음에 다시 시도하면 변경한 파일만 통과시킨다.</p>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;myTask&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
+    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;path/to/**&#39;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">cached</span><span class="p">(</span><span class="s1">&#39;myTask&#39;</span><span class="p">))</span> <span class="c1">//cache 이름</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">using</span><span class="p">())</span> <span class="c1">//변경한 파일만 출력된다.</span>
+<span class="p">});</span>
+
+<span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;watch&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
+    <span class="c1">//파일이 하나만 변경돼도 myTask를 통째로 실행</span>
+    <span class="nx">gulp</span><span class="p">.</span><span class="nx">watch</span><span class="p">(</span><span class="s1">&#39;path/to/**&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;myTask&#39;</span><span class="p">]);</span>
+
+    <span class="nx">done</span><span class="p">();</span>
+<span class="p">});</span>
+
+<span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
+    <span class="nx">seq</span><span class="p">(</span><span class="s1">&#39;myTask&#39;</span><span class="p">,</span> <span class="s1">&#39;watch&#39;</span><span class="p">,</span> <span class="nx">done</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+</code></pre>
+<p>이렇게 정의하고 실행하면 ‘myTask’, ‘watch’ 순으로 실행한다. ‘myTask’를 실행할 때 <code>$.cached()</code>를 통과하는 파일은 모두 캐시한다.</p>
+<p>그러고 나서 Gulp가 watch하고 있는 파일 중 하나가 실행하면 ‘myTask’가 다시 실행된다.</p>
+<p>‘myTask’ 타스크는 변경된 파일에 대해서만 선택적으로 처리하는 것이 아니라 ‘path/to/**’로 스캔하는 파일을 전부 다시 처리한다.</p>
+<p>그래서 <code>$.cached()</code> 플러그인으로 변경된 파일만 처리하도록 필터링하는 것이 필요하다.</p>
+<h4 id="-gulp-connect-"><a href="https://github.com/AveVlad/gulp-connect">gulp-connect</a></h4>
+<p>Livereload를 위해서 필요하다:</p>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;server&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
+    <span class="nx">$</span><span class="p">.</span><span class="nx">connect</span><span class="p">.</span><span class="nx">server</span><span class="p">({</span>
+        <span class="nx">livereload</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">root</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;path/to/root&#39;</span><span class="p">],</span>
+        <span class="nx">port</span><span class="o">:</span> <span class="mi">9000</span>
+    <span class="p">});</span>
+
+    <span class="nx">done</span><span class="p">();</span>
+<span class="p">});</span>
+</pre></div>
+
+</code></pre>
+<p>이렇게 서버를 띄우고 Livereload를 할 타스크에 플러그인을 추가한다:</p>
+<pre><code class="lang-js"><div class="highlight"><pre>        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;scripts/&#39;</span><span class="p">))</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">connect</span><span class="p">.</span><span class="nx">reload</span><span class="p">());</span>
+</pre></div>
+
+</code></pre>
+<p>이 플러그인은 <code>watch</code> 타스크를 함께 쓸 때 빛난다. 어떤 파일이 변경되면 <code>gulp-cached</code> 플러그인으로 그 파일만 선택해서 <code>gulp-connect</code> 플러그인으로 Reload 시킨다.</p>
+<h4 id="-gulp-filter-"><a href="https://github.com/sindresorhus/gulp-filter">gulp-filter</a></h4>
+<p>이 플러그인은 if 문이라고 생각하면 쉽다. 말로 설명하면 에너지가 분산되니 바로 소스를 보자.</p>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;styles&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">lessFilter</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="s1">&#39;**/*.less&#39;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">scssFilter</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="s1">&#39;**/*.scss&#39;</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;path/to/**/*.{css,less,scss}&#39;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">cached</span><span class="p">(</span><span class="s1">&#39;styles&#39;</span><span class="p">))</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">using</span><span class="p">())</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">lessFilter</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">less</span><span class="p">({</span>
+            <span class="nx">strictMath</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="nx">strictUnits</span><span class="o">:</span> <span class="kc">true</span>
+        <span class="p">}))</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">lessFilter</span><span class="p">.</span><span class="nx">restore</span><span class="p">())</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">scssFilter</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">sass</span><span class="p">({</span> <span class="nx">style</span><span class="o">:</span> <span class="s1">&#39;expanded&#39;</span> <span class="p">}))</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">scssFilter</span><span class="p">.</span><span class="nx">restore</span><span class="p">())</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">autoprefixer</span><span class="p">(</span><span class="s1">&#39;last 2 version&#39;</span><span class="p">))</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">minifycss</span><span class="p">())</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">rename</span><span class="p">({</span> <span class="nx">suffix</span><span class="o">:</span> <span class="s1">&#39;.min&#39;</span> <span class="p">}))</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;path/to/styles/&#39;</span><span class="p">))</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">connect</span><span class="p">.</span><span class="nx">reload</span><span class="p">());</span>
+<span class="p">});</span>
+</pre></div>
+
+</code></pre>
+<p>scss 파일을 컴파일하는 것과 less 파일을 컴파일하는 것은 <code>gulp-filter</code> 플러그인을 이용해서 각각 하고 컴파일한 css 파일은 공통으로 처리한다.</p>
+<h4 id="-gulp-cache-"><a href="https://github.com/jgable/gulp-cache">gulp-cache</a></h4>
+<p><code>gulp-cache</code>는 <code>gulp-cached</code>와 다른 플러그인이다. <code>gulp-cache</code>는 오래 걸리는 작업은 처음에 캐시하고 재사용하는 데 사용한다.</p>
+<p>이미지를 압축하는 일은 한번 압축하면 다시 압축할 필요가 없다. 개발할 때 엄청 여러 번 gulp를 실행한다. 오래 걸리는 이미지 압축은 변경될 때 한 번만 실행하면 좋을 것이다. 한번 압축한 것을 저장해 뒀다가 재사용하면 매번 시간을 줄일 수 있다.</p>
+<p>이미지 최적화는 <code>gulp-imagemin</code>을 사용한다:</p>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">&#39;images&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="s1">&#39;path/to/image&#39;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">cached</span><span class="p">(</span><span class="s1">&#39;images&#39;</span><span class="p">))</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">using</span><span class="p">())</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">cache</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">imagemin</span><span class="p">({</span>
+            <span class="nx">optimizationLevel</span><span class="o">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="nx">progressive</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="nx">interlaced</span><span class="o">:</span> <span class="kc">true</span>
+        <span class="p">})))</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="s1">&#39;path/to/image&#39;</span><span class="p">))</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">size</span><span class="p">())</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">connect</span><span class="p">.</span><span class="nx">reload</span><span class="p">());</span>
+<span class="p">});</span>
+</pre></div>
+
+</code></pre>
+<h2 id="-">참고</h2>
+<ul>
+<li><a href="https://github.com/gulpjs/gulp/blob/master/docs/API.md">https://github.com/gulpjs/gulp/blob/master/docs/API.md</a></li>
+<li>각 플러그인 문서.</li>
+</ul>
+
+    ]]></content>
+    </entry>
+    <entry>
     <title><![CDATA[ d3js: chapter 12. geomapping ]]></title>
     <link herf="http://pismute.github.io/d3js/12-geomapping.html" />
-    <updated>2015-06-20T12:52:21.264Z</updated>
+    <updated>2015-06-21T11:17:56.483Z</updated>
     <id>http://pismute.github.io/d3js/12-geomapping.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-12-geomapping">d3js: chapter 12. geomapping</h1>
@@ -547,7 +564,7 @@
 <p>이 데이터를 d3로 그려보자:</p>
 <p id="phr-path"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="c1">//Width and height</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="c1">//Width and height</span>
 <span class="kr">const</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
 <span class="kr">const</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">300</span><span class="p">;</span>
 
@@ -582,17 +599,18 @@
 
 </code></pre>
 <p>pie layout:</p>
-<pre><code><div class="highlight"><pre><span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">];</span>
+<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">];</span>
 
 <span class="c1">// pie layout</span>
 <span class="kd">var</span> <span class="nx">pie</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">layout</span><span class="p">.</span><span class="nx">pie</span><span class="p">();</span>
 </pre></div>
 
-</code></pre><p><img src="d3js-layout-pie.png" alt=""></p>
+</code></pre>
+<p><img src="d3js-layout-pie.png" alt=""></p>
 <p>pie chart 그리기:</p>
 <div id="phr-pie-chart"></div>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="c1">//Width and height</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="c1">//Width and height</span>
 <span class="kr">const</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">300</span><span class="p">;</span>
 <span class="kr">const</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">300</span><span class="p">;</span>
 
@@ -652,7 +670,7 @@
 </ul>
 <p id="phr-projection"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="c1">//Width and height</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="c1">//Width and height</span>
 <span class="kr">const</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
 <span class="kr">const</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">300</span><span class="p">;</span>
 
@@ -721,7 +739,7 @@
 </pre></div>
 
 </code></pre><p>Choropleth 그리기:</p>
-<pre><code class="lang-js"><div class="highlight"><pre><span class="c1">//Width and height</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="c1">//Width and height</span>
 <span class="kr">const</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
 <span class="kr">const</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">300</span><span class="p">;</span>
 
@@ -807,7 +825,7 @@
 <li>데이터 만들기(저자의 Favorite): <a href="http://www.gpsvisualizer.com/geocoder/">http://www.gpsvisualizer.com/geocoder/</a></li>
 <li>데이터 수동 확인: <a href="http://teczno.com/squares">http://teczno.com/squares</a></li>
 </ul>
-<pre><code class="lang-js"><div class="highlight"><pre><span class="c1">//Width and height</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="c1">//Width and height</span>
 <span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">300</span><span class="p">;</span>
 
@@ -944,7 +962,7 @@
 <p>마지막으로 투영법(Projection)을 변경해보는 예제:</p>
 <p id="phr-mercator"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="c1">//Width and height</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="c1">//Width and height</span>
 <span class="kr">const</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">700</span><span class="p">;</span>
 <span class="kr">const</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
 
@@ -985,7 +1003,7 @@
     <entry>
     <title><![CDATA[ d3js: chapter 7. scale ]]></title>
     <link herf="http://pismute.github.io/d3js/07-scale.html" />
-    <updated>2015-06-20T12:52:21.265Z</updated>
+    <updated>2015-06-21T11:17:56.483Z</updated>
     <id>http://pismute.github.io/d3js/07-scale.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-7-scale">d3js: chapter 7. scale</h1>
@@ -1001,7 +1019,7 @@
 <p id="phr-scatterplot-01"></p>
 
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
 
 <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span>
@@ -1047,7 +1065,7 @@
 <h3 id="7-5-2-">7.5.2 동적인 척도 만들기.</h3>
 <p id="phr-scatterplot-02"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
 
 <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span>
@@ -1112,7 +1130,7 @@
 <h4 id="y-">y축 바꾸기:</h4>
 <p id="phr-scatterplot-03"></p>
 
-<pre><code><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
 
 <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span>
@@ -1130,7 +1148,7 @@
 
 <span class="c1">//동적 스케일</span>
 <span class="kd">var</span> <span class="nx">xScale</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">linear</span><span class="p">()</span>
-    <span class="p">.</span><span class="nx">domain</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">dataset</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="c1">// d = [5, 20], ...</span>
+    <span class="p">.</span><span class="nx">domain</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">dataset</span><span class="p">,</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span><span class="o">=&gt;</span> <span class="nx">d</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span> <span class="c1">// d = [5, 20], ...</span>
     <span class="p">.</span><span class="nx">range</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="nx">w</span><span class="p">]);</span>
 
 <span class="kd">var</span> <span class="nx">yScale</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">linear</span><span class="p">()</span>
@@ -1163,10 +1181,11 @@
     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;fill&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">);</span>
 </pre></div>
 
-</code></pre><h4 id="padding-">padding 넣기:</h4>
+</code></pre>
+<h4 id="padding-">padding 넣기:</h4>
 <p id="phr-scatterplot-04"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
 
 <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span>
@@ -1224,7 +1243,7 @@
 <h4 id="-">반지름도 스케일 적용:</h4>
 <p id="phr-scatterplot-05"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
 
 <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span>
@@ -1285,7 +1304,7 @@
 <h4 id="-">큰 데이터 추가:</h4>
 <p id="phr-scatterplot-06"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
 
 <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span>
@@ -1346,7 +1365,7 @@
 <h4 id="h-100-300-">h를 100에서 300으로:</h4>
 <p id="phr-scatterplot-07"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">300</span><span class="p">;</span>
 
 <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span>
@@ -1411,7 +1430,7 @@
 <p><strong>scale(0)</strong>:<p id="nice-01"></p>
 <strong>scale(0.123)</strong>:<p id="nice-02"></p>
 <strong>scale(4.567)</strong>:<p id="nice-03"></p></p>
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">scale</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">linear</span><span class="p">()</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">scale</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">linear</span><span class="p">()</span>
     <span class="p">.</span><span class="nx">domain</span><span class="p">([</span><span class="mf">0.123</span><span class="p">,</span> <span class="mf">4.567</span><span class="p">])</span>
     <span class="p">.</span><span class="nx">range</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">500</span><span class="p">])</span>
     <span class="p">.</span><span class="nx">nice</span><span class="p">();</span>
@@ -1430,7 +1449,7 @@
 <p><strong>scale(0)</strong>:<p id="range-round-01"></p>
 <strong>scale(0.123)</strong>:<p id="range-round-02"></p>
 <strong>scale(4.567)</strong>:<p id="range-round-03"></p></p>
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">scale</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">linear</span><span class="p">()</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">scale</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">linear</span><span class="p">()</span>
     <span class="p">.</span><span class="nx">domain</span><span class="p">([</span><span class="mf">0.123</span><span class="p">,</span> <span class="mf">4.567</span><span class="p">])</span>
     <span class="p">.</span><span class="nx">rangeRound</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">500</span><span class="p">])</span>
     <span class="p">.</span><span class="nx">nice</span><span class="p">();</span>
@@ -1444,7 +1463,7 @@
 <h5 id="-clamp-http-bit-ly-12h7utf-"><a href="http://bit.ly/12h7uTf">clamp()</a></h5>
 <p>기본적으로 d3는 치역 밖에 값도 반환해주지만, 정의한 치역 범위를 벗어나는 경우 치역의 최소값과 최대값 중 하나를 반환한다.</p>
 <p><strong>scale(10)</strong>:<p id="clamp-01"></p></p>
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">scale</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">linear</span><span class="p">()</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">scale</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">linear</span><span class="p">()</span>
     <span class="p">.</span><span class="nx">domain</span><span class="p">([</span><span class="mf">0.123</span><span class="p">,</span> <span class="mf">4.567</span><span class="p">])</span>
     <span class="p">.</span><span class="nx">range</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">500</span><span class="p">]);</span>
 
@@ -1453,7 +1472,7 @@
 
 </code></pre>
 <p><strong>scale(10)</strong>:<p id="clamp-02"></p></p>
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">scale</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">linear</span><span class="p">()</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">scale</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">linear</span><span class="p">()</span>
     <span class="p">.</span><span class="nx">domain</span><span class="p">([</span><span class="mf">0.123</span><span class="p">,</span> <span class="mf">4.567</span><span class="p">])</span>
     <span class="p">.</span><span class="nx">range</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">500</span><span class="p">])</span>
     <span class="p">.</span><span class="nx">clamp</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
@@ -1481,7 +1500,7 @@
     <entry>
     <title><![CDATA[ d3js: chapter 8. axis ]]></title>
     <link herf="http://pismute.github.io/d3js/08-axis.html" />
-    <updated>2015-06-20T12:52:21.265Z</updated>
+    <updated>2015-06-21T11:17:56.483Z</updated>
     <id>http://pismute.github.io/d3js/08-axis.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-8-axis">d3js: chapter 8. axis</h1>
@@ -1490,7 +1509,7 @@
 </blockquote>
 <h2 id="-axis-https-github-com-mbostock-d3-wiki-svg-axes-"><a href="https://github.com/mbostock/d3/wiki/SVG-Axes">Axis</a></h2>
 <p>이 페이지 내내 사용하는 공통 코드(7장의 내용):</p>
-<pre><code class="lang-js"><div class="highlight"><pre><span class="c1">//global로 선언하는 것은 안좋은 습관이지만,</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="c1">//global로 선언하는 것은 안좋은 습관이지만,</span>
 <span class="c1">//아래 예제에서 계속 사용하기 위해 global로 선언한다.</span>
 <span class="kd">var</span> <span class="nx">g</span> <span class="o">=</span> <span class="nb">window</span><span class="p">;</span>
 
@@ -1552,7 +1571,7 @@
 <p>산포도 그리기:</p>
 <p id="phr-scatterplot-01"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="c1">//svg.append(&#39;g&#39;)</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="c1">//svg.append(&#39;g&#39;)</span>
 <span class="nx">scatterplot</span><span class="p">(</span><span class="s1">&#39;#phr-scatterplot-01&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">d3</span><span class="p">.</span><span class="nx">svg</span><span class="p">.</span><span class="nx">axis</span><span class="p">()</span>
         <span class="p">.</span><span class="nx">scale</span><span class="p">(</span><span class="nx">xScale</span><span class="p">)</span>
@@ -1565,7 +1584,7 @@
 <h3 id="8-3-">8.3 보기 좋게 다듬기.</h3>
 <p id="phr-scatterplot-02"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">xAxis</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">svg</span><span class="p">.</span><span class="nx">axis</span><span class="p">()</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">xAxis</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">svg</span><span class="p">.</span><span class="nx">axis</span><span class="p">()</span>
     <span class="p">.</span><span class="nx">scale</span><span class="p">(</span><span class="nx">xScale</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">orient</span><span class="p">(</span><span class="s1">&#39;bottom&#39;</span><span class="p">);</span>
 
@@ -1620,7 +1639,7 @@
 <p>위치를 이동시키자:</p>
 <p id="phr-scatterplot-03"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">xAxis</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">svg</span><span class="p">.</span><span class="nx">axis</span><span class="p">()</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">xAxis</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">svg</span><span class="p">.</span><span class="nx">axis</span><span class="p">()</span>
     <span class="p">.</span><span class="nx">scale</span><span class="p">(</span><span class="nx">xScale</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">orient</span><span class="p">(</span><span class="s1">&#39;bottom&#39;</span><span class="p">);</span>
 
@@ -1648,7 +1667,7 @@
 <p>7개나 5개 d3가 생성해주는 눈금 개 수는 같다. d3는 <code>ticks()</code>로 설정한 눈금 근처로 해서 데이터에 맞는 눈금 개수를 알아서 생성해준다:</p>
 <p id="phr-scatterplot-04"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">xAxis</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">svg</span><span class="p">.</span><span class="nx">axis</span><span class="p">()</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">xAxis</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">svg</span><span class="p">.</span><span class="nx">axis</span><span class="p">()</span>
     <span class="p">.</span><span class="nx">scale</span><span class="p">(</span><span class="nx">xScale</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">orient</span><span class="p">(</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">ticks</span><span class="p">(</span><span class="mi">7</span><span class="p">);</span>
@@ -1675,7 +1694,7 @@
 </code></pre>
 <p id="phr-scatterplot-05"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">xAxis</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">svg</span><span class="p">.</span><span class="nx">axis</span><span class="p">()</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">xAxis</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">svg</span><span class="p">.</span><span class="nx">axis</span><span class="p">()</span>
     <span class="p">.</span><span class="nx">scale</span><span class="p">(</span><span class="nx">xScale</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">orient</span><span class="p">(</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">ticks</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
@@ -1703,7 +1722,7 @@
 <h3 id="y-">Y축도 만들자</h3>
 <p id="phr-scatterplot-06"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">padding</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">padding</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
 
 <span class="c1">//아래 예제에서 재정의 하기 귀찮으니 글로벌로 선언한다.</span>
 <span class="kd">var</span> <span class="nx">g</span> <span class="o">=</span> <span class="nb">window</span>
@@ -1745,7 +1764,7 @@
 <h2 id="8-6-">8.6 마지막 손질</h2>
 <p id="phr-scatterplot-07"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">g</span> <span class="o">=</span> <span class="nb">window</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">g</span> <span class="o">=</span> <span class="nb">window</span>
 <span class="nx">g</span><span class="p">.</span><span class="nx">dataset</span> <span class="o">=</span> <span class="p">[];</span>
 <span class="kd">var</span> <span class="nx">numDataPoints</span> <span class="o">=</span> <span class="mi">50</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">xRange</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">;</span>
@@ -1808,7 +1827,7 @@
 <h4 id="text-">text 제거</h4>
 <p id="phr-scatterplot-08"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">svg</span> <span class="o">=</span> <span class="nx">scatterplot</span><span class="p">(</span><span class="s1">&#39;#phr-scatterplot-08&#39;</span><span class="p">);</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">svg</span> <span class="o">=</span> <span class="nx">scatterplot</span><span class="p">(</span><span class="s1">&#39;#phr-scatterplot-08&#39;</span><span class="p">);</span>
 <span class="nx">svg</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;class&#39;</span><span class="p">,</span> <span class="s1">&#39;axis&#39;</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;transform&#39;</span><span class="p">,</span> <span class="err">`</span><span class="nx">translate</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">$</span><span class="p">{</span><span class="nx">h</span> <span class="o">-</span> <span class="nx">padding</span><span class="p">})</span><span class="err">`</span><span class="p">)</span>
@@ -1825,7 +1844,7 @@
 <p><a href="https://github.cm/mbostock/d3/wiki/Formatting#d3_format">d3.format</a></p>
 <p id="phr-scatterplot-09"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">xAxis</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">svg</span><span class="p">.</span><span class="nx">axis</span><span class="p">()</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">xAxis</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">svg</span><span class="p">.</span><span class="nx">axis</span><span class="p">()</span>
     <span class="p">.</span><span class="nx">scale</span><span class="p">(</span><span class="nx">xScale</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">orient</span><span class="p">(</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">ticks</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
@@ -1856,7 +1875,7 @@
     <entry>
     <title><![CDATA[ d3js: chapter 5. data ]]></title>
     <link herf="http://pismute.github.io/d3js/05-data.html" />
-    <updated>2015-06-20T12:52:21.266Z</updated>
+    <updated>2015-06-21T11:17:56.484Z</updated>
     <id>http://pismute.github.io/d3js/05-data.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-5-data">d3js: chapter 5. data</h1>
@@ -1873,7 +1892,7 @@ circle {
 
 <p id="phr-scatch"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">25</span><span class="p">];</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">25</span><span class="p">];</span>
 
 <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;#phr-scatch&#39;</span><span class="p">).</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dataset</span><span class="p">)</span>
@@ -1888,7 +1907,7 @@ circle {
 <p><code>selectAll(&quot;circle&quot;)</code>은 “circle” 엘리먼트랑 data랑 역는 행위:</p>
 <p id="phr-join"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">svg</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;#phr-join&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">)</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">svg</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;#phr-join&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">)</span>
         <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">720</span><span class="p">)</span>
         <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="mi">240</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>
@@ -1966,7 +1985,7 @@ circle {
 </pre></div>
 
 </code></pre>
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">];</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">];</span>
 
 <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;#phr-join-update&#39;</span><span class="p">).</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dataset</span><span class="p">)</span> <span class="c1">//return update selection</span>
@@ -1993,7 +2012,7 @@ circle {
 </pre></div>
 
 </code></pre>
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">];</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">];</span>
 
 <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s1">&#39;#phr-join-enter&#39;</span><span class="p">).</span><span class="nx">selectAll</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
     <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dataset</span><span class="p">)</span> <span class="c1">//return update selection</span>
@@ -2014,7 +2033,7 @@ circle {
     <entry>
     <title><![CDATA[ d3js: chapter 6. drawing with data ]]></title>
     <link herf="http://pismute.github.io/d3js/06-drawing-with-data.html" />
-    <updated>2015-06-20T12:52:21.266Z</updated>
+    <updated>2015-06-21T11:17:56.484Z</updated>
     <id>http://pismute.github.io/d3js/06-drawing-with-data.html</id>
     <content type="html"><![CDATA[
         <h1 id="d3js-chapter-6-drawing-with-data">d3js: chapter 6. drawing with data</h1>
@@ -2024,7 +2043,7 @@ circle {
 <h2 id="6-3-1-svg-">6.3.1 SVG를 만들어 보자</h2>
 <p id="phr-svg-sample"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span>
 <span class="kd">var</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">25</span><span class="p">];</span>
 
@@ -2049,7 +2068,7 @@ circle {
 <h2 id="6-4-">6.4 막대 차트 만들기.</h2>
 <p id="phr-bar-chart"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span>
 <span class="kd">var</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span>
     <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">25</span><span class="p">];</span>
@@ -2088,7 +2107,7 @@ circle {
 <h2 id="6-5-scatterplot-">6.5 산포도(scatterplot) 만들기</h2>
 <p id="phr-scatterplot"></p>
 
-<pre><code class="lang-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span>
+<pre><code class="lang-js-run-d3"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="mi">500</span>
 <span class="kd">var</span> <span class="nx">h</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
@@ -2130,188 +2149,6 @@ circle {
 </pre></div>
 
 </code></pre>
-
-    ]]></content>
-    </entry>
-    <entry>
-    <title><![CDATA[ Rest ]]></title>
-    <link herf="http://pismute.github.io/2015/rest.html" />
-    <updated>2015-06-20T12:52:21.266Z</updated>
-    <id>http://pismute.github.io/2015/rest.html</id>
-    <content type="html"><![CDATA[
-        <h2 id="rest">Rest</h2>
-<ul>
-<li><a href="https://github.com/for-GET/http-decision-diagram">https://github.com/for-GET/http-decision-diagram</a></li>
-<li>SSL everywhere - all the time</li>
-<li>Good Documentation</li>
-</ul>
-<h2 id="url">URL</h2>
-<p>endpoint name should be plural</p>
-<ul>
-<li>GET /tickets - Retrieves a list of tickets</li>
-<li>GET /tickets/12 - Retrieves a specific ticket</li>
-<li>POST /tickets - Creates a new ticket</li>
-<li>PUT /tickets/12 - Updates ticket #12</li>
-<li>PATCH /tickets/12 - Partially updates ticket #12</li>
-<li>DELETE /tickets/12 - Deletes ticket #12</li>
-</ul>
-<h3 id="what-about-actions-that-don-t-fit-into-the-world-of-crud-operations-">What about actions that don’t fit into the world of CRUD operations?</h3>
-<p>This is where things can get fuzzy. There are a number of approaches:</p>
-<ul>
-<li>Restructure the action to appear like a field of a resource. This works if the action doesn’t take parameters. For example an activate action could be mapped to a boolean activated field and updated via a PATCH to the resource.</li>
-<li>Treat it like a sub-resource with RESTful principles. For example, GitHub’s API lets you star a gist with <code>PUT /gists/:id/star</code> and unstar with <code>DELETE /gists/:id/star</code>.</li>
-<li>Sometimes you really have no way to map the action to a sensible RESTful structure. For example, a multi-resource search doesn’t really make sense to be applied to a specific resource’s endpoint. In this case, /search would make the most sense even though it isn’t a resource. This is OK - just do what’s right from the perspective of the API consumer and make sure it’s documented clearly to avoid confusion.</li>
-</ul>
-<h3 id="result-filtering-sorting-searching">Result filtering, sorting &amp; searching</h3>
-<ul>
-<li>Filtering: <code>GET /tickets?q=state%3Dopen</code></li>
-<li>Sorting:<ul>
-<li><code>GET /tickets?sort=-priority</code>: Retrieves a list of tickets in descending order of priority</li>
-<li><code>GET /tickets?sort=-priority,created_at</code> - Retrieves a list of tickets in descending order of priority. Within a specific priority, older tickets are ordered first</li>
-</ul>
-</li>
-<li>Searching: <code>q</code> paramters</li>
-</ul>
-<h4 id="combining-these-together-">Combining these together.</h4>
-<ul>
-<li><code>GET /tickets?sort=-updated_at</code> - Retrieve recently updated tickets</li>
-<li><code>GET /tickets?q=state3Dclosed&amp;sort=-updated_at</code> - Retrieve recently closed tickets</li>
-<li><code>GET /tickets?q=state%3Dopen&amp;sort=-priority,created_at</code> - Retrieve the highest priority open tickets mentioning the word ‘return’</li>
-</ul>
-<h4 id="aliases-for-common-queries">Aliases for common queries</h4>
-<p>To make the API experience more pleasant for the average consumer, consider packaging up sets of conditions into easily accessible RESTful paths. For example, the recently closed tickets query above could be packaged up as <code>GET /tickets/recently_closed</code></p>
-<h4 id="limiting-which-fields-are-returned-by-the-api">Limiting which fields are returned by the API</h4>
-<ul>
-<li><code>GET /tickets?fields=id,subject,customer_name,updated_at</code></li>
-</ul>
-<h4 id="updates-creation-should-return-a-resource-representation">Updates &amp; creation should return a resource representation</h4>
-<ul>
-<li>PUT, POST or PATCH should return a resource.</li>
-<li>In case of a POST that resulted in a creation, use a HTTP 201 status code and include a <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.30">Location header</a> that points to the URL of the new resource.</li>
-</ul>
-<h2 id="json">JSON</h2>
-<ul>
-<li>Pretty print by default &amp; ensure gzip is supported</li>
-<li>Don’t use an envelope by default, but make it possible when needed. Exception cases:<ul>
-<li><code>?envelope=ture</code></li>
-<li>when jsonp(and callback) paramter exists</li>
-<li>when HATEOAS enabled.</li>
-</ul>
-</li>
-<li>An API that accepts JSON encoded POST, PUT &amp; PATCH requests should also require the Content-Type header be set to application/json or throw a 415 Unsupported Media Type HTTP status code.</li>
-</ul>
-<h4 id="snake_case-is-20-easier-to-read-than-camelcase">snake_case is 20% easier to read than camelCase</h4>
-<p>Based on an <a href="http://ieeexplore.ieee.org/xpl/articleDetails.jsp?tp=&amp;arnumber=5521745">eye tracking study on camelCase and snake_case(PDF)</a> from 2010</p>
-<h4 id="format">format</h4>
-<h5 id="date-and-time">Date and Time</h5>
-<p>The HTTP spec already specifies using RFC 1123 date formats (currently being used in Date, If-Modified-Since &amp; Last-Modified HTTP headers). If we were to specify a new HTTP header that takes a timestamp of some sort, it should follow RFC 1123 conventions instead of using UNIX timestamps.</p>
-<pre><code><div class="highlight"><pre><span class="nx">Last</span><span class="o">-</span><span class="nx">Modified</span><span class="o">:</span> <span class="nx">Tue</span><span class="p">,</span> <span class="mi">15</span> <span class="nx">Nov</span> <span class="mi">1994</span> <span class="mi">12</span><span class="o">:</span><span class="mi">45</span><span class="o">:</span><span class="mi">26</span> <span class="nx">GMT</span>
-</pre></div>
-
-</code></pre><h2 id="paging">Paging</h2>
-<p>/record?offset=100&amp;limit=25</p>
-<ul>
-<li><a href="http://tools.ietf.org/html/rfc5988#page-6">http://tools.ietf.org/html/rfc5988#page-6</a></li>
-<li><a href="http://developer.github.com/v3/#pagination">http://developer.github.com/v3/#pagination</a></li>
-<li>count: <code>X-Total-Count: ${count}</code></li>
-</ul>
-<h2 id="auto-loading-related-resource-representations">Auto loading related resource representations</h2>
-<p>As this does go against some RESTful principles, we can minimize our deviation by only doing so based on an embed (or expand) query parameter.</p>
-<p><code>GET /tickets/12?embed=customer.name,assigned_user</code></p>
-<pre><code><div class="highlight"><pre><span class="p">{</span>
-  <span class="s2">&quot;id&quot;</span> <span class="o">:</span> <span class="mi">12</span><span class="p">,</span>
-  <span class="s2">&quot;subject&quot;</span> <span class="o">:</span> <span class="s2">&quot;I have a question!&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;summary&quot;</span> <span class="o">:</span> <span class="s2">&quot;Hi, ....&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;customer&quot;</span> <span class="o">:</span> <span class="p">{</span>
-    <span class="s2">&quot;name&quot;</span> <span class="o">:</span> <span class="s2">&quot;Bob&quot;</span>
-  <span class="p">},</span>
-  <span class="nx">assigned_user</span><span class="o">:</span> <span class="p">{</span>
-   <span class="s2">&quot;id&quot;</span> <span class="o">:</span> <span class="mi">42</span><span class="p">,</span>
-   <span class="s2">&quot;name&quot;</span> <span class="o">:</span> <span class="s2">&quot;Jim&quot;</span><span class="p">,</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-</code></pre><h2 id="rate-limiting">Rate limiting</h2>
-<p>To prevent abuse, it is standard practice to add some sort of rate limiting to an API. <a href="http://tools.ietf.org/html/rfc6585">RFC 6585</a> introduced a HTTP status code <a href="http://tools.ietf.org/html/rfc6585#section-4">429 Too Many Requests</a> to accommodate this.</p>
-<p>At a minimum, include the following headers (using <a href="https://dev.twitter.com/docs/rate-limiting/1.1">Twitter’s naming conventions</a> as headers typically don’t have mid-word capitalization):</p>
-<ul>
-<li>X-Rate-Limit-Limit - The number of allowed requests in the current period</li>
-<li>X-Rate-Limit-Remaining - The number of remaining requests in the current period</li>
-<li>X-Rate-Limit-Reset - The number of seconds left in the current period</li>
-</ul>
-<h2 id="authentication">Authentication</h2>
-<p>A RESTful API should be stateless. This means that request authentication should not depend on cookies or sessions. Instead, each request should come with some sort authentication credentials.</p>
-<ul>
-<li>Access token that is delivered in the user name field of HTTP Basic Auth</li>
-<li><p>An API that needs to support JSONP uses a special parameter access_token, <code>/tickets?access_tocken=${token}</code></p>
-</li>
-<li><p>Oauth2: <a href="http://blog.outsider.ne.kr/433">http://blog.outsider.ne.kr/433</a></p>
-</li>
-<li>JSON Web Token: <a href="http://bcho.tistory.com/999">http://bcho.tistory.com/999</a></li>
-</ul>
-<p>JSON Web Token 예제 만들어 보고 쓸것.</p>
-<h2 id="versioning">Versioning</h2>
-<ul>
-<li>URL has major version(v1): /api/v1/blahblah</li>
-<li>Header has date-based minor version: <code>X-Api-Version: 2015-06-09</code></li>
-</ul>
-<h2 id="caching">Caching</h2>
-<h3 id="etag-">ETag:</h3>
-<p>When generating a request, include a HTTP header ETag containing a hash or checksum of the representation. This value should change whenever the output representation changes. Now, if an inbound HTTP requests contains a If-None-Match header with a matching ETag value, the API should return a 304 Not Modified status code instead of the output representation of the resource.</p>
-<h3 id="last-modified">Last-Modified</h3>
-<p>This basically works like to ETag, except that it uses timestamps. The response header Last-Modified contains a timestamp in RFC 1123 format which is validated against If-Modified-Since. Not e that the HTTP spec has had 3 different acceptable date formats and the server should be prepared to accept any one of them.</p>
-<pre><code><div class="highlight"><pre><span class="nx">If</span><span class="o">-</span><span class="nx">Modified</span><span class="o">-</span><span class="nx">Since</span><span class="o">:</span> <span class="nx">Tue</span><span class="p">,</span> <span class="mi">15</span> <span class="nx">Nov</span> <span class="mi">1994</span> <span class="mi">12</span><span class="o">:</span><span class="mi">45</span><span class="o">:</span><span class="mi">26</span> <span class="nx">GMT</span>
-</pre></div>
-
-</code></pre><h2 id="errors">Errors</h2>
-<pre><code><div class="highlight"><pre><span class="p">{</span>
-  <span class="s2">&quot;code&quot;</span> <span class="o">:</span> <span class="mi">1234</span><span class="p">,</span>
-  <span class="s2">&quot;message&quot;</span> <span class="o">:</span> <span class="s2">&quot;Something bad happened :(&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;More details about the error here&quot;</span>
-<span class="p">}</span>
-</pre></div>
-
-</code></pre><p>Validation errors for PUT, PATCH and POST requests will need a field breakdown. This is best modeled by using a fixed top-level error code for validation failures and providing the detailed errors in an additional errors field, like so:</p>
-<pre><code><div class="highlight"><pre><span class="p">{</span>
-  <span class="s2">&quot;code&quot;</span> <span class="o">:</span> <span class="mi">1024</span><span class="p">,</span>
-  <span class="s2">&quot;message&quot;</span> <span class="o">:</span> <span class="s2">&quot;Validation Failed&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;errors&quot;</span> <span class="o">:</span> <span class="p">[</span>
-    <span class="p">{</span>
-      <span class="s2">&quot;code&quot;</span> <span class="o">:</span> <span class="mi">5432</span><span class="p">,</span>
-      <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;first_name&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;message&quot;</span> <span class="o">:</span> <span class="s2">&quot;First name cannot have fancy characters&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-       <span class="s2">&quot;code&quot;</span> <span class="o">:</span> <span class="mi">5622</span><span class="p">,</span>
-       <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;password&quot;</span><span class="p">,</span>
-       <span class="s2">&quot;message&quot;</span> <span class="o">:</span> <span class="s2">&quot;Password cannot be blank&quot;</span>
-    <span class="p">}</span>
-  <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-
-</code></pre><h2 id="http-status-codes">HTTP status codes</h2>
-<ul>
-<li><code>200 OK</code>: Response to a successful GET, PUT, PATCH or DELETE. Can also be used for a POST that doesn’t result in a creation.</li>
-<li><code>201 Created</code>: Response to a POST that results in a creation. Should be combined with a Location header pointing to the location of the new resource</li>
-<li><code>204 No Content</code>: Response to a successful request that won’t be returning a body (like a DELETE request)</li>
-<li><code>304 Not Modified</code>: Used when HTTP caching headers are in play</li>
-<li><code>400 Bad Request</code>: The request is malformed, such as if the body does not parse</li>
-<li><code>401 Unauthorized</code>: When no or invalid authentication details are provided. Also useful to trigger an auth popup if the API is used from a browser</li>
-<li><code>403 Forbidden</code>: When authentication succeeded but authenticated user doesn’t have access to the resource</li>
-<li><code>404 Not Found</code>: When a non-existent resource is requested</li>
-<li><code>405 Method Not Allowed</code>: When an HTTP method is being requested that isn’t allowed for the authenticated user</li>
-<li><code>410 Gone</code>: Indicates that the resource at this end point is no longer available. Useful as a blanket response for old API versions</li>
-<li><code>415 Unsupported Media Type</code>: If incorrect content type was provided as part of the request</li>
-<li><code>422 Unprocessable Entity</code>: Used for validation errors</li>
-<li><code>429 Too Many Requests</code>: When a request is rejected due to rate limiting</li>
-</ul>
-<h2 id="reference">Reference</h2>
-<ul>
-<li><a href="http://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api">http://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api</a></li>
-<li><a href="http://bcho.tistory.com/954">http://bcho.tistory.com/954</a></li>
-</ul>
 
     ]]></content>
     </entry>
