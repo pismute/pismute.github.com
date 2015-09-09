@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf=8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+
+    <title>AsciiDoc</title>
+    <meta name="description"
+        content="``이 글도 AsciiDoc으로 썼다''"></meta>
+    <meta name="keywords"
+        content="asciidoc"></meta>
+    <meta name="author"
+        content="Changwoo Park"></meta>
+
+    <link rel="home" type="text/html" href="https://pismute.github.io/" />
+    <link rel="alternate" type="application/atom+xml"
+        title="AsciiDoc &raquo; Feed"
+        href="https://pismute.github.io/atom.xml"></link>
+
+    <link rel="shortcut icon" href="/images/favicon.ico"></link>
+
+    <link rel="stylesheet" media="screen, projection"
+        href="/bower_components/bootstrap/dist/css/bootstrap.min.css"></link>
+    <link rel="stylesheet" media="screen, projection"
+        href="/bower_components/bootstrap-material-design/dist/css/material.min.css"></link>
+    <link rel="stylesheet" media="screen, projection"
+        href="/bower_components/bootstrap-material-design/dist/css/ripples.min.css"></link>
+    <link rel="stylesheet" media="screen, projection"
+        href="/styles/style.css"></link>
+
+    <script
+        src="/bower_components/requirejs/require.js"></script>
+    <script src="/scripts/require-config.min.js"></script>
+    <script async defer src="/scripts/script.min.js"></script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed"
+                    data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">@</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/site/archive.html">Archive</a></li>
+                    <li><a href="/site/keyword-map.html">Keyword Map</a></li>
+                </ul>
+                <form id="search-form" class="navbar-form navbar-right"
+                        action="http://google.com/search" method="get">
+                    <input type="hidden" name="q"
+                        value="site:pismute.github.io"></input>
+                    <input class="form-control" type="text"
+                        name="q" results="0" placeholder="Search..."></input>
+                </form>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+    <div class="container">
+        <div>
+          <link rel="stylesheet" media="screen, projection"
+    href="/styles/github.css"></link>
+<link rel="stylesheet" media="screen, projection"
+    href="/styles/pygment-github.css"></link>
+<link rel="stylesheet" media="screen, projection"
+    href="/styles/markdown.css"></link>
+
+<section class="content">
+    <article id="post" class="row post " typeof="sioc:post" about="/2015/asciidoc.html" lang="ko-kr">
+        <div class="col-sm-2 small-font">
+            <br /><br />
+            <p property="dc:created">2015 Aug 23</p>
+
+            <div id="social-buttons" class="top-line">
+              <ul class="unstyled">
+                <li><a class="twitter-share-button" href="https://twitter.com/share"
+                  data-url="https://pismute.github.io/2015/asciidoc.html" data-via="pismute"
+                  data-count="horizontal" data-lang="en">tweet</a></li>
+                <li><div class="g-plusone" data-size="medium"
+                    data-href="https://pismute.github.io/2015/asciidoc.html"></div></li>
+                <li><div class="fb-like"
+                  data-href="https://pismute.github.io/2015/asciidoc.html" data-send="false"
+                  data-layout="button_count" data-show-faces="false"></div></li>
+              </ul>
+            </div>
+
+            <p class="small-font top-line"><a href="/site/keyword-map.html#asciidoc" class="keyword">asciidoc</a></p>
+        </div>
+
+        <div class="col-sm-10">
+            <div property="sioc:content"><div class="sect1">
+<h2 id="_asciidoc">AsciiDoc</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>``이 글도 AsciiDoc으로 썼다''</p>
+</div>
+<div class="paragraph">
+<p>Progit2판은 <a href="http://asciidoc.org">AsciiDoc</a>으로 쓰여졌다. 그래서 알게 됐는데 물건이다. Markdown을 html의 추상화 버전이라고 할 수 있다면, Asciidoc은 latex를 추상화 했다고 할 수 있다. 물론 아니다.</p>
+</div>
+<div class="paragraph">
+<p>UML처럼 표현이 풍부하고 어렵지만 UML처럼 사장될 것 같지는 않다. 복잡한 것은 안쓰고 쓰는 것만 쓰면 된다. 무엇보다 asciidoctor 툴체인이 있기때문에 <strong>latex 없이도 pdf(책)</strong>을 쓸 수 있다. progit 1판에서 pdf 수정하느라 알지도 못하는 latex 소스를 눈알 빠지게 들여다 보던 짓은 이제 안해도 되겠다.</p>
+</div>
+<div class="paragraph">
+<p>이제 쓰기 시작해서 아직 많이 모르지만, 너무 만족한다.</p>
+</div>
+<div class="sect2">
+<h3 id="__">장점</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Ebook을 쉽게 만들 수 있다.</p>
+</li>
+<li>
+<p>Markdown처럼 쓰면 또 어렵지 않다.</p>
+</li>
+<li>
+<p>충분한 Ecosystem.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>GitHub.</p>
+</li>
+<li>
+<p>Editor: Atom(<a href="https://github.com/asciidoctor/atom-asciidoc-preview">asciidoctor-preview</a>, <a href="https://atom.io/packages/language-asciidoc">language-asciidoc</a>), Emacs(<a href="https://github.com/sensorflo/adoc-mode">adoc-mode</a>)</p>
+</li>
+<li>
+<p>Ebook: <a href="http://gitbook.io">gitbook</a></p>
+</li>
+<li>
+<p>Static Site: <a href="https://github.com/asciidoctor/jekyll-asciidoc-quickstart">jekyll</a>, <a href="https://github.com/pismute/gulp-makdoc">makdoc</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>풍부한 표현과 기능: 내가 상상하던 건 다 된다.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Include: 파일 여러개를 조합할 수 있다</p>
+</li>
+<li>
+<p>Table: 테이블 레이아웃을 자유롭게 만들 수 있다.</p>
+</li>
+<li>
+<p>Callout: 소스코드 설명할 때 편하다.</p>
+</li>
+<li>
+<p>Math: latexmath등 수식도 되는데 내가 수식 쓸일이 없어서 잘 모르겠다.</p>
+</li>
+<li>
+<p>등등 다 된다.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="___2">단점</h3>
+<div class="paragraph">
+<p>표현과 기능이 많은 만큼 어디에 쓰이는 지 모르는 것들이 많다. Markdown은 하나하나가 매우 유용한 표현인데, Asciidoc은 어디에 쓰는지 모르겠는 것들이 많다.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="___3">참고</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://powerman.name/doc/asciidoc">Asciidoc Cheetsheet</a></p>
+</li>
+<li>
+<p><a href="http://asciidoctor.org/docs/asciidoc-writers-guide/">AsciiDoc Writer 's Guide</a></p>
+</li>
+<li>
+<p><a href="http://www.methods.co.nz/asciidoc/">AsciiDoc User Manual</a></p>
+</li>
+<li>
+<p><a href="http://www.staticgen.com/" class="bare">http://www.staticgen.com/</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+        </div>
+    </article>
+
+</section>
+
+<div id="fb-root"></div>
+<script async defer
+    src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>
+<script async defer
+    src="http://platform.twitter.com/widgets.js"></script>
+<script async defer
+    src="http://apis.google.com/js/plusone.js"></script>
+
+        </div>
+        <footer class="footer">
+            <p>Copyright &copy; 2015+ Changwoo Park</p>
+            <p><small>Powered by <a href="https://github.com/pismute/gulp-makdoc">makdoc</a>, <a href="http://fezvrasta.github.io/bootstrap-material-design/">bootstrap-material-design</a></small></p>
+        </footer>
+    </div>
+
+</body>
+</html>
